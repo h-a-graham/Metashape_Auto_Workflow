@@ -1,0 +1,37 @@
+Variable,Input,description
+home,C:/Users/hughg/Desktop/Photoscan_Automate,# the project folder full path make sure to use forward slash
+document_title,PS_Auto_USA_test4,# name of the project (do not add extension)
+data_directory,C:/Users/hughg/Desktop/Photoscan_Automate/Andy_photos,# the directory where all images are being stored
+coordinate_system,EPSG:: 32114,# the coordinate system EPSG code (OSGB- EPSG:: 27700) EPSG:: 2027
+marker_coordinates_file,C:/Users/hughg/Desktop/Photoscan_Automate/markers/markers_USA.csv,"# marker coordinates - Not essential. If not desired enter ""NONE"""
+marker_coord_system,EPSG:: 32114,# enter the EPSG code for the crs that the marker coordinates are measures in.
+Export_Folder,C:/Users/hughg/Desktop/Photoscan_Automate/Exports_USA,# The name of an export folder (no need to create this - if it doesn't exist it will be created)
+Estimate_Image_Quality,TRUE,# either TRUE or FALSE for the following options (must be in caps)
+Image_Quality_Threshold,0.5,# The PhotoScan image quality threshold - 0.5 as default
+Sparse_Point_Cloud_quality,LowAccuracy,"#  Sparse point cloud accuracy pick from: [HighestAccuracy,  HighAccuracy,  MediumAccuracy,  LowAccuracy, LowestAccuracy]"
+Dense_Point_Cloud_Quality,LowestQuality,"# Dense point cloud quality pick from: [UltraQuality, HighQuality, MediumQuality, LowQuality, LowestQuality]"
+Export_Dense_Point_Cloud,TRUE,
+Build_Mesh,TRUE,
+Mesh_Quality,HighFaceCount,"#Mesh face count option -  pick from: [LowFaceCount, MediumFaceCount, HighFaceCount]"
+Build_Texture,FALSE,
+Build_Orthomosaic,TRUE,
+Build_DSM,TRUE,
+Export_Model,FALSE,
+Export_Orthomosaic_LowRes,TRUE,
+Orthomosaic_LowRes_Resolution,0.2,# options for the resolution of orthomosaic and DSM exports in metres
+Orthomosaic_LowRes_Write_Big_Tiff,FALSE,# keep false unless dataset is expected to be very large
+Export_Orthomosaic_HighRes,TRUE,
+Orthomosaic_HighRes_Resolution,0.02,
+Orthomosaic_HighRes_Write_Big_Tiff,FALSE,# keep false unless dataset is expected to be very large
+Export_DSM_LowRes,TRUE,
+DSM_LowRes_Resolution,1,
+DSM_LowRes_Write_Big_Tiff,FALSE,# keep false unless dataset is expected to be very large
+Export_DSM_HighRes,TRUE,
+DSM_HighRes_Resolution,0.05,
+DSM_HighRes_Write_Big_Tiff,FALSE,# keep false unless dataset is expected to be very large
+Export_Report,TRUE,
+Reprojection_error_limit,0.45,"# tie point error reprojection limit - used to filter out ""bad"" tie points - this may need to be increased if too may points are removed. Leaves as 0.45 by default"
+Depth_Map_Pair_limit_Enable,FALSE,"# sets a threshold for the number of pairs allowed for depth map creation. If ""FALSE"" then this is unlimited by default"
+Depth_Map_Pair_limit_value,80,# If not enabled this value does nothing number of pairs allowed for depth filtering. 80 is conservative
+DPC_Pair_limit_Enable,FALSE,"# sets a threshold for the number of pairs allowed for dense cloud creation. If ""FALSE"" then this is unlimited by default"
+DPC_limit_value,80,# If not enabled this value does nothing number of pairs allowed for depth filtering. 80 is conservative
