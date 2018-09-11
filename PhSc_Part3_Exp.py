@@ -180,7 +180,7 @@ def build_texture(chunk, doc, home, name, b_texture, e_model, exportdir, doc_tit
 
 
 def build_ortho(chunk, exportdir, doc, home, name, doc_title, b_ortho, e_ortho_lr, e_ortho_hr, r_ortho_lr, r_ortho_hr,
-                bt_ortho_lr, bt_ortho_hr):  # Currently no option to add "description" metadata to exports add when available!!!
+                bt_ortho_lr, bt_ortho_hr):  # Currently no option to add "description metadata to exports add when available!!!
     if b_ortho == "TRUE":
         print ("building Orthomosaic")
         chunk.buildOrthomosaic(surface=PS.ModelData, blending=PS.MosaicBlending, fill_holes=True)
@@ -323,7 +323,7 @@ def export_report(chunk, exportdir, doc_title, e_report):
     if e_report == "TRUE":
         print ("generating and exporting photoscan report")
         report_path = exportdir + "/" + doc_title + "_process_report.pdf"
-        chunk.exportReport(report_path)
+        chunk.exportReport(path=report_path, description=doc_title)
     else:
         print ("export report option not selected")
 
