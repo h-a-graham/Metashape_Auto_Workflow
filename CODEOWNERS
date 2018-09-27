@@ -1,5 +1,5 @@
 # These owners will be the default owners for everything in
 # the repo. Unless a later match takes precedence,
-# @hugh-a-graham will be requested for
+# @h-a-graham will be requested for
 # review when someone opens a pull request.
-*       @global-hugh-a-graham
+*       @h-a-graham
