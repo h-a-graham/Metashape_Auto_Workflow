@@ -340,7 +340,7 @@ def create_settings_summary(chunk, home, doc_title, exportdir, dpc_npoints):
         list_a.append(marker.reference.accuracy)
 
     if (list_a[1:] ==  list_a[:-1]) == True:
-        ps_mark_locsa = (str(chunk.maker_location_accuracy))
+        ps_mark_locsa = (str(chunk.marker_location_accuracy))
         ps_mark_locs = ps_mark_locsa.replace("Vector", "")
     else:
 
