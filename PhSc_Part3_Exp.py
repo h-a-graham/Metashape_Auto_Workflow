@@ -366,7 +366,8 @@ def create_settings_summary(chunk, home, doc_title, exportdir, dpc_npoints):
             for row in mycsv:
                 colB = row[1]
                 sett_s1s.append(colB)
-
+        sett_s1s = [0 if x == "no_filter_applied" else x for x in sett_s1s]
+        
         sett_s2s = []
 
         with open(s2_out_sett, 'r') as f:
