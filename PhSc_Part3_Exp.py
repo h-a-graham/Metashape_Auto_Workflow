@@ -8,6 +8,7 @@ import PhotoScan as PS
 import os
 import csv
 import inspect
+import shutil
 from datetime import datetime
 
 # Clear the Console screen
@@ -108,11 +109,16 @@ def script_setup():
 
     create_settings_summary(chunk, home, doc_title, exportdir, dpc_npoints)
 
-    if os.path.isfile(home + "/" + doc_title + "_backup.psx"):
-        print ("deleting backup")
-
     doc.save(home + name)
+    
+    doc.save(home + "/" + doc_title + "_backup.psx", doc.chunks)
 
+   # Removing unecessary second backup file
+    if os.path.isfile(home + "/" + doc_title + "_backup2.psx"):
+        os.remove(home + "/" + doc_title + "_backup2.psx")
+        shutil.rmtree(home + "/" + doc_title + "_backup2.files")
+        print ("Deleting backup2")
+    else: print("Backup2 file does not exist")
 
 def export_DPC(chunk, doc_title, exportdir, e_DPC):  # export points
     if e_DPC == "TRUE":
