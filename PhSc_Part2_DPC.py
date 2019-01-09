@@ -98,10 +98,11 @@ def script_setup():
 
     n_cams_enabled_DPC, n_points_final_SPC, n_points_orig_DPC, outside_BB = build_DPC(chunk, dpc_quality, pair_dm_lim, pair_dm_val,
                                                                           pair_dpc_lim, pair_dpc_val)
+    doc.save(home + name)
 
     export_settings(home, doc_title, outside_BB, n_points_final_SPC, n_points_orig_DPC, n_cams_enabled_DPC)
 
-    doc.save(home + name)
+    
     doc.save(home + "/" + doc_title + "_backup2.psx", doc.chunks)
 #####################################################################################################################
 
