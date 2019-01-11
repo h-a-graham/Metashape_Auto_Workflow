@@ -285,9 +285,15 @@ def ref_setting_setup(doc, points, projections,
     # get number of aligned cameras
     n_aligned, n_not_aligned = count_aligned(chunk)
     print ("number (%) of aligned cameras is:")
-    print (str(n_aligned) + "(" + str(n_aligned/(n_aligned+n_not_aligned)*100)+ "%)")
+    try:
+        print (str(n_aligned) + "(" + str(n_aligned/(n_aligned+n_not_aligned)*100)+ "%)")
+    except ZeroDivisionError:
+        print ("no cameras are aligned!!!!")
     print ("number of cameras not aligned is:")
-    print (str(n_not_aligned) + "(" + str(n_not_aligned/(n_aligned+n_not_aligned)*100)+ "%)")
+    try:
+        print (str(n_not_aligned) + "(" + str(n_not_aligned/(n_aligned+n_not_aligned)*100)+ "%)")
+    except ZeroDivisionError:
+        print ("No cameras loaded - something isn't aligned...")
 
     # Set up Reference Settings:
     cam_loc_acc = [20, 20, 50]    # xyz metres
