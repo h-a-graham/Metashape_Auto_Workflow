@@ -343,7 +343,8 @@ def create_settings_summary(chunk, home, doc_title, exportdir, dpc_npoints):
 
     list_a = []
     for marker in chunk.markers:
-        list_a.append(marker.reference.accuracy)
+        if marker.reference.accuracy is not None:
+            list_a.append(marker.reference.accuracy)
 
     if (list_a[1:] ==  list_a[:-1]) == True:
         ps_mark_locsa = (str(chunk.marker_location_accuracy))
