@@ -125,7 +125,7 @@ def export_DPC(chunk, doc_title, exportdir, e_DPC):  # export points
         if chunk.dense_cloud is not None:
             print ("Exporting Dense Point Cloud")
             dpc_name = "/" + doc_title + "_dpc_export.laz"
-            chunk.exportPoints(exportdir + dpc_name, precision=3)
+            chunk.exportPoints(exportdir + dpc_name, precision=3, projection=chunk.crs)  # specify projection to use.
         else:
             print ("you need to build a dense point cloud")
     else:
