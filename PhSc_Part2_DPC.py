@@ -113,7 +113,6 @@ def check_markers(chunk):
         print ("No markers are present - continue...")
         quit_yn = True
 
-
     else:
         enabled_markers = []
         for marker in chunk.markers:
@@ -152,7 +151,6 @@ def check_markers(chunk):
     return quit_yn
 
 
-
 def count_aligned(chunk): # GET NUMBER OF ALIGNED AND NOT-ALIGNED CAMERAS
     aligned_list = list()
     for camera in chunk.cameras:
@@ -173,7 +171,6 @@ def count_aligned(chunk): # GET NUMBER OF ALIGNED AND NOT-ALIGNED CAMERAS
     print (str(n_aligned) + "(" + str(n_aligned / (n_aligned + n_not_aligned) * 100) + "%)")
     print ("number of cameras not aligned is:")
     print (str(n_not_aligned) + "(" + str(n_not_aligned / (n_aligned + n_not_aligned) * 100) + "%)")
-
 
 
 def Optimise_Bundle_adj(chunk, doc, home, name, doc_title):
@@ -277,9 +274,6 @@ def export_settings(home, doc_title, outside_BB, n_points_final_SPC, n_points_or
         with open(home + '/' + doc_title + '.files/PhSc2_settings_TEMP.csv', 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerows(zip(opt_list, params_list))
-
-
-
 
 
     #############  MANUAL SCREENING OF DENSE POINT CLOUD NOW REQUIRED ##########################
