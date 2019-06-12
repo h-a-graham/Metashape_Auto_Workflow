@@ -153,7 +153,7 @@ def check_markers(chunk):
 
 
 
-def count_aligned(chunk): # GET NUMBER OF ALIGNED AND NOT-ALIGNED CAMERAS: Check if this belongs here or in script 1
+def count_aligned(chunk): # GET NUMBER OF ALIGNED AND NOT-ALIGNED CAMERAS
     aligned_list = list()
     for camera in chunk.cameras:
         if camera.transform:
@@ -186,16 +186,14 @@ def Optimise_Bundle_adj(chunk, doc, home, name, doc_title):
 
     print("save")
     doc.save(home + name)
-    doc.save(home + "/" + doc_title + "_backup.psx", doc.chunks) # enable after testing!!!!!!
-
+    doc.save(home + "/" + doc_title + "_backup.psx", doc.chunks)
 
 
 def build_DPC(chunk, dpc_quality, pair_dm_lim, pair_dm_val, pair_dpc_lim, pair_dpc_val):
 
-
     chunk.resetRegion()  # reset bounding region following the manual point cleaning
     region = chunk.region
-    region.size = 1.5 * region.size  # increase bounding region 2 times
+    region.size = 1.5 * region.size  # increase bounding region
     chunk.region = region  # set new region
 
     #####  Check number of enabled cameras ###
@@ -227,7 +225,7 @@ def build_DPC(chunk, dpc_quality, pair_dm_lim, pair_dm_val, pair_dpc_lim, pair_d
                 continue
 
     outside_BB = len([p for p in chunk.point_cloud.points if p.selected])
-    print ("number of points outside BB is:" + str(outside_BB))
+    print ("number of points outside bounding box is:" + str(outside_BB))
 
     n_points_final_SPC = len(chunk.point_cloud.points) - outside_BB
 
@@ -257,7 +255,7 @@ def build_DPC(chunk, dpc_quality, pair_dm_lim, pair_dm_val, pair_dpc_lim, pair_d
         chunk.buildDepthMaps(quality=PS.UltraQuality, filter=PS.MildFiltering, reuse_depth=True)
     else:
         print ("---------------------------------------------------------------------------------------------")
-        print ("--------------------- WARNING! SET A CORRECT NAME FOR DPC QUALITY -------------------------")
+        print ("--------------------- WARNING! SET A CORRECT NAME FOR DPC QUALITY ---------------------------")
         print ("------------------------------- DEFAULTING TO HIGH QUALITY ----------------------------------")
         print ("---------------------------------------------------------------------------------------------")
         chunk.buildDepthMaps(quality=PS.HighQuality, filter=PS.MildFiltering, reuse_depth=True)
