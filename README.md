@@ -38,8 +38,7 @@ Look at the number/% of points excluded by the reprojection filter.
 - Run ‘PhSc_Part3_Exp.py’ *(If running on ISCA note the Moab number for tracking purposes).*
 
 **7. Interactive**
-- If run on ISCA, note processing time, peak memory use, whether texture was generated and number of images (send information to Andy).
-- Review console output for errors.
+- FRom ISCA Review console output (o and e file) for errors.
 - Review processing report:
 	-Inspect all graphics
 	-Inspect marker error values
@@ -50,5 +49,3 @@ Look at the number/% of points excluded by the reprojection filter.
 - Download/backup data.
 
 **On to the next pipeline...**
-We're still working on this...
-Just a little text to test pycharm link...blah
