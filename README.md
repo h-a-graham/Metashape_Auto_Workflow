@@ -50,8 +50,4 @@ Look at the number/% of points excluded by the reprojection filter.
 - Check all required files were generated:
 	-	.laz
 	- Orthomosaic
-- Download/backup data.
-
-**On to the next pipeline...**
-We're still working on this...
-Just a little text to test pycharm link...blah
+- Download data.
