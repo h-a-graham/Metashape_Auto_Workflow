@@ -35,3 +35,4 @@ Depth_Map_Pair_limit_Enable,FALSE,"# sets a threshold for the number of pairs al
 Depth_Map_Pair_limit_value,80,# If not enabled this value does nothing number of pairs allowed for depth filtering. 80 is conservative
 DPC_Pair_limit_Enable,FALSE,"# sets a threshold for the number of pairs allowed for dense cloud creation. If ""FALSE"" then this is unlimited by default"
 DPC_limit_value,80,# If not enabled this value does nothing number of pairs allowed for depth filtering. 80 is conservative
+Rolling_Shutter_Correction,FALSE,"# Enables rolling shutter correction"
