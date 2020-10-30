@@ -2,7 +2,7 @@
 # ------ PhotoScan workflow Part 1: -----------------------------------------------------------------------------------
 # ------ Image Quality analysis, Camera Alignment analysis, Reprojection Error Analysis, Sparse Point Cloud Creation --
 # ------ and Reference settings ---------------------------------------------------------------------------------------
-# ------ Written for PhotoScan 1.4.3 64 bit ---------------------------------------------------------------------------
+# ------ Written for PhotoScan 1.4.3 64 bit --Revised for Metashape 1.6.4 October 2020-------------------------------------------------------------------------
 #######################################################################################################################
 # IMPORTS #
 import Metashape as PS
@@ -12,7 +12,7 @@ import csv
 import inspect
 from datetime import datetime
 
-PS.app.console.clear() # comment out when using ISCA
+PS.app.console_pane.clear() # comment out when using ISCA
 
 startTime = datetime.now()
 print ("Script start time: " + str(startTime))
@@ -51,10 +51,10 @@ def script_setup():
     spc_quality = var_list[10]
 
     reproj_err_limit = var_list[32]
-    
-    rolling_shutter = var_list[37]
 
     rolling_shutter = var_list[37]
+
+    altitude_adjustment = var_list[38] #MSCHANGE
     
     print (home)
     print(doc_title)
