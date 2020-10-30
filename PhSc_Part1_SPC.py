@@ -110,7 +110,7 @@ def script_setup():
     if marker_coords == "NONE":  # if no markers are given then pass
         pass
     else:
-        chunk.loadReference(marker_coords, columns="nxyzXYZ", delimiter=",", group_delimiters=False,  # if a path is given markers are added
+        chunk.importReference(marker_coords, columns="nxyzXYZ", delimiter=",", group_delimiters=False,  # if a path is given markers are added MSCHANGE
                             skip_rows=1, ignore_labels=False, create_markers=True, threshold=0.1)
 
         if marker_crs == coord_sys:  # if marker and project crs match then pass otherwise convert marker crs
@@ -120,6 +120,7 @@ def script_setup():
                 marker.reference.location = new_crs.project(chunk.crs.unproject(marker.reference.location))
 
     chunk.crs = new_crs  # set project coordinate system
+    chunk.updateTransform #MSCHANGE
 
     doc.save(home + name)
 
