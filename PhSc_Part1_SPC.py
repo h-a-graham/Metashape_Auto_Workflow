@@ -5,7 +5,7 @@
 # ------ Written for PhotoScan 1.4.3 64 bit ---------------------------------------------------------------------------
 #######################################################################################################################
 # IMPORTS #
-import PhotoScan as PS
+import Metashape as PS
 import math
 import os
 import csv
@@ -51,6 +51,8 @@ def script_setup():
     spc_quality = var_list[10]
 
     reproj_err_limit = var_list[32]
+    
+    rolling_shutter = var_list[37]
 
     rolling_shutter = var_list[37]
     
@@ -80,6 +82,7 @@ def script_setup():
 
     if rolling_shutter == 'TRUE':
         chunk.sensors[0].rolling_shutter = True  # Option to enable Rolling shutter compensation
+
     
     new_crs = PS.CoordinateSystem(coord_sys)  # define desired Coordinate System
 
