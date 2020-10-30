@@ -5,14 +5,14 @@
 # ------ Written for PhotoScan 1.4.3 64 bit --Revised for Metashape 1.6.4 October 2020-------------------------------------------------------------------------
 #######################################################################################################################
 # IMPORTS #
-import Metashape as PS
+import Metashape as MS
 import math
 import os
 import csv
 import inspect
 from datetime import datetime
 
-PS.app.console_pane.clear() # comment out when using ISCA
+MS.app.console_pane.clear() # comment out when using ISCA
 
 startTime = datetime.now()
 print ("Script start time: " + str(startTime))
@@ -62,13 +62,13 @@ def script_setup():
     print (coord_sys)
     name = "/" + doc_title + ".psx"
 
-    doc = PS.app.document
+    doc = MS.app.document
 
-    PS.app.gpu_mask = 2 ** len(PS.app.enumGPUDevices()) - 1  # activate all available GPUs
-    if PS.app.gpu_mask <= 1:
-        PS.app.cpu_enable = True  # Enable CPU for GPU accelerated processing (faster with 1 no difference with 0 GPUs)
-    elif PS.app.gpu_mask > 1:
-        PS.app.cpu_enable = False # Disable CPU for GPU accelerated tasks (faster when multiple GPUs are present)
+    MS.app.gpu_mask = 2 ** len(MS.app.enumGPUDevices()) - 1  # activate all available GPUs
+    if MS.app.gpu_mask <= 1:
+        MS.app.cpu_enable = True  # Enable CPU for GPU accelerated processing (faster with 1 no difference with 0 GPUs)
+    elif MS.app.gpu_mask > 1:
+        MS.app.cpu_enable = False # Disable CPU for GPU accelerated tasks (faster when multiple GPUs are present)
 
     doc.save(home+name)
 
@@ -78,18 +78,18 @@ def script_setup():
     photos = [os.path.join(datadir, p) for p in photos]  # convert to full paths
     print (photos)
 
-    chunk = PS.app.document.addChunk()  # create a chunk -  Warning you need to delete the original automatically created chunk when Metashape opens if running the script from tools
+    chunk = MS.app.document.addChunk()  # create a chunk -  Warning you need to delete the original automatically created chunk when Metashape opens if running the script from tools
 
     chunk.addPhotos(photos)  # add photos to chunk MSCHANGE
 
     if rolling_shutter == 'TRUE':
         chunk.sensors[0].rolling_shutter = True  # Option to enable Rolling shutter compensation
 
-    new_crs = PS.CoordinateSystem(coord_sys)  # define desired Coordinate System
+    new_crs = MS.CoordinateSystem(coord_sys)  # define desired Coordinate System
 
     try:
         for camera in chunk.cameras:  # set the coordinates for cameras
-            camera.reference.location = PS.CoordinateSystem.transform(camera.reference.location,chunk.crs, new_crs) # old script: new_crs.project(chunk.crs.unproject(camera.reference.location))#MSCHANGE
+            camera.reference.location = MS.CoordinateSystem.transform(camera.reference.location,chunk.crs, new_crs) # old script: new_crs.project(chunk.crs.unproject(camera.reference.location))#MSCHANGE
     except Exception:
         print ("Images do not have projection data... No Worries! continue without!")
 
@@ -352,8 +352,8 @@ def filter_reproj_err (chunk, reproj_err_limit):
     print ("filtering tiepoints by reprojection error (threshold = " + str(reproj_err_limit) + ")")
     Reproj_Err_Limit = float(reproj_err_limit)
 
-    f = PS.PointCloud.Filter()
-    f.init(chunk, PS.PointCloud.Filter.ReprojectionError)
+    f = MS.PointCloud.Filter()
+    f.init(chunk, MS.PointCloud.Filter.ReprojectionError)
     f.selectPoints(Reproj_Err_Limit)
     nselected = len([p for p in chunk.point_cloud.points if p.selected])
     total_points = len(chunk.point_cloud.points)
@@ -390,7 +390,7 @@ def export_settings(orig_n_cams, n_filter_removed, perc_filter_removed, real_qua
             writer = csv.writer(f)
             writer.writerows(zip(opt_list, params_list))
 
-
+    print ("Now it's time to do some manual cleaning as per the protocol......") #MSCHANGE
 
 if __name__ == '__main__':
     script_setup()
