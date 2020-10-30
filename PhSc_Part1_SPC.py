@@ -74,11 +74,13 @@ def script_setup():
 
     # Locate and add photos
     photos = os.listdir(datadir)  # Get the photos filenames
+    print (photos)
     photos = [os.path.join(datadir, p) for p in photos]  # convert to full paths
+    print (photos)
 
-    chunk = PS.app.document.addChunk()  # create a chunk
+    chunk = PS.app.document.addChunk()  # create a chunk -  Warning you need to delete the original automatically created chunk when Metashape opens if running the script from tools
 
-    chunk.addPhotos([photos])  # add photos to chunk
+    chunk.addPhotos(photos)  # add photos to chunk MSCHANGE
 
     if rolling_shutter == 'TRUE':
         chunk.sensors[0].rolling_shutter = True  # Option to enable Rolling shutter compensation
