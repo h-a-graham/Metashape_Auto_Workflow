@@ -152,7 +152,7 @@ def preprocess(Est_img_qual, img_qual_thresh, chunk):
     # Estimating Image Quality and excluding poor images
     if Est_img_qual == "TRUE":
         print ("running image quality filter...")
-        chunk.estimateImageQuality()
+        chunk.analyzePhotos()  # MSCHANGE
 
         qual = float(img_qual_thresh)
 
