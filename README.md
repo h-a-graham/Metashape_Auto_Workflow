@@ -19,8 +19,7 @@ An automated workflow for processing drone imagery in PhotoScan
 - Run ‘PhSc_Part1_SPC.py’ *(If running on ISCA note the Moab number for tracking purposes).*
 
 **3. Interactive**
-- If run on ISCA, note processing time, peak memory use and number of images (send information to Andy).
-- Review Console output for error and/or warning messages (If on ISCA, ‘e’ & ‘o’ files.
+- Review Console output for error and/or warning messages (If on ISCA, ‘e’ & ‘o’ files).
 Look at the number/% of points excluded by the reprojection filter.
 - Review the ‘XXX_project_settings.csv’ file, to assess the proportion of aligned images, and the number of tie points excluded by the reprojection error filter.
 - Consider whether it is necessary to review image quality manually (e.g. water, etc.).
@@ -33,7 +32,6 @@ Look at the number/% of points excluded by the reprojection filter.
 - Run ‘PhSc_Part2_DPC.py’ *(If running on ISCA note the Moab number for tracking purposes).*
 
 **5. Interactive**
-- If running on ISCA, note processing time, peak memory use, dense cloud quality setting and number of images (send information to Andy).
 - Review console output for errors.
 - Review plausibility of dense point cloud (& remove obvious outliers).
 
@@ -41,8 +39,7 @@ Look at the number/% of points excluded by the reprojection filter.
 - Run ‘PhSc_Part3_Exp.py’ *(If running on ISCA note the Moab number for tracking purposes).*
 
 **7. Interactive**
-- If run on ISCA, note processing time, peak memory use, whether texture was generated and number of images (send information to Andy).
-- Review console output for errors.
+- FRom ISCA Review console output (o and e file) for errors.
 - Review processing report:
 	-Inspect all graphics
 	-Inspect marker error values
@@ -50,4 +47,6 @@ Look at the number/% of points excluded by the reprojection filter.
 - Check all required files were generated:
 	-	.laz
 	- Orthomosaic
-- Download data.
+- Download/backup data.
+
+**On to the next pipeline...**
