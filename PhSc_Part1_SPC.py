@@ -85,12 +85,11 @@ def script_setup():
     if rolling_shutter == 'TRUE':
         chunk.sensors[0].rolling_shutter = True  # Option to enable Rolling shutter compensation
 
-    
     new_crs = PS.CoordinateSystem(coord_sys)  # define desired Coordinate System
 
     try:
         for camera in chunk.cameras:  # set the coordinates for cameras
-            camera.reference.location = new_crs.project(chunk.crs.unproject(camera.reference.location))
+            camera.reference.location = PS.CoordinateSystem.transform(camera.reference.location,chunk.crs, new_crs) # old script: new_crs.project(chunk.crs.unproject(camera.reference.location))#MSCHANGE
     except Exception:
         print ("Images do not have projection data... No Worries! continue without!")
 
