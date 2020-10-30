@@ -1,6 +1,9 @@
 # PhotoScan_Auto_Workflow
 An automated workflow for processing drone imagery in PhotoScan
 
+## NB. This code will need to be updated to work with the updated python API in MetaShape >1.6.0!!!
+
+
 **1. Interactive: Collate & Prepare Datasets**
 - Find/start entry in the Image-Based Modelling Processing Log (use the ‘scripted log (for V2)’). Keep this log up to date as new parameters are confirmed and steps are completed.
 - Create project directory (E.g. ‘Sev_SEG_20180531’, note updated date code format).
@@ -47,8 +50,4 @@ Look at the number/% of points excluded by the reprojection filter.
 - Check all required files were generated:
 	-	.laz
 	- Orthomosaic
-- Download/backup data.
-
-**On to the next pipeline...**
-We're still working on this...
-Just a little text to test pycharm link...blah
+- Download data.

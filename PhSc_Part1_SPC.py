@@ -54,6 +54,8 @@ def script_setup():
     
     rolling_shutter = var_list[37]
 
+    rolling_shutter = var_list[37]
+    
     print (home)
     print(doc_title)
     print (datadir)
@@ -77,9 +79,10 @@ def script_setup():
     chunk = PS.app.document.addChunk()  # create a chunk
 
     chunk.addPhotos([photos])  # add photos to chunk
-    
+
     if rolling_shutter == 'TRUE':
-        chunk.sensors[0].rolling_shutter = True
+        chunk.sensors[0].rolling_shutter = True  # Option to enable Rolling shutter compensation
+
     
     new_crs = PS.CoordinateSystem(coord_sys)  # define desired Coordinate System
 
