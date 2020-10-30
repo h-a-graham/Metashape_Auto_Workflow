@@ -1,4 +1,4 @@
-# PhotoScan_Auto_Workflow
+# Metashape_Workflow
 An automated workflow for processing drone imagery in PhotoScan
 
 ## NB. This code will need to be updated to work with the updated python API in MetaShape >1.6.0!!!
