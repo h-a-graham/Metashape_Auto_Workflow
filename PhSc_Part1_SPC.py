@@ -93,6 +93,19 @@ def script_setup():
     except Exception:
         print ("Images do not have projection data... No Worries! continue without!")
 
+    #  New script section adding user defined altitude to source values in the reference pane - defined through input file line 38
+
+    alt = float(altitude_adjustment) #MSCHANGE
+
+    for camera in chunk.cameras:  #MSCHANGE
+        if camera.reference.location:  #MSCHANGE
+            coord = camera.reference.location #MSCHANGE
+            camera.reference.location = Metashape.Vector([coord.x, coord.y, coord.z + alt]) #MSCHANGE
+
+
+
+
+
     # Optional import of markers if desired...
     if marker_coords == "NONE":  # if no markers are given then pass
         pass
