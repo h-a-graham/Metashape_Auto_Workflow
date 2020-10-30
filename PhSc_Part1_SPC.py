@@ -215,34 +215,34 @@ def build_SPC(chunk, spc_quality):
     print ("building sparse point cloud...")
     # Match and Align Photos and Cameras
     if spc_quality == "LowestAccuracy":
-        chunk.matchPhotos(accuracy=PS.LowestAccuracy, preselection=PS.GenericPreselection,
+        chunk.matchPhotos(downscale=5,
                           generic_preselection=True, reference_preselection=True, filter_mask=False, keypoint_limit=40000,
-                          tiepoint_limit=8000)  # LowestAccuracy
+                          tiepoint_limit=8000)  # LowestAccuracy accuracy changed to downscale in Metashape 1.6.4 removed preselection MSCHANGEMSCHANGE
     elif spc_quality == "LowAccuracy":
-        chunk.matchPhotos(accuracy=PS.LowAccuracy, preselection=PS.GenericPreselection,
+        chunk.matchPhotos(downscale=4,
                           generic_preselection=True, reference_preselection=True, filter_mask=False, keypoint_limit=40000,
-                          tiepoint_limit=8000)
+                          tiepoint_limit=8000) # accuracy changed to downscale in Metashape 1.6.4, removed preselection MSCHANGEMSCHANGE
     elif spc_quality == "MediumAccuracy":
-        chunk.matchPhotos(accuracy=PS.MediumAccuracy, preselection=PS.GenericPreselection,
+        chunk.matchPhotos(downscale=3,
                           generic_preselection=True, reference_preselection=True, filter_mask=False, keypoint_limit=40000,
-                          tiepoint_limit=8000)
+                          tiepoint_limit=8000) #accuracy changed to downscale in Metashape 1.6.4 removed preselection MSCHANGEMSCHANGE
     elif spc_quality == "HighAccuracy":
-        chunk.matchPhotos(accuracy=PS.HighAccuracy, preselection=PS.GenericPreselection,
+        chunk.matchPhotos(downscale=2,
                           generic_preselection=True, reference_preselection=True, filter_mask=False, keypoint_limit=40000,
-                          tiepoint_limit=8000)
+                          tiepoint_limit=8000)# accuracy changed to downscale in Metashape 1.6.4 removed preselection MSCHANGEMSCHANGE
     elif spc_quality == "HighestAccuracy":
-        chunk.matchPhotos(accuracy=PS.HighestAccuracy, preselection=PS.GenericPreselection,
+        chunk.matchPhotos(downscale=1,
                           generic_preselection=True, reference_preselection=True, filter_mask=False, keypoint_limit=40000,
-                          tiepoint_limit=8000)
+                          tiepoint_limit=8000) # accuracy changed to downscale in Metashape 1.6.4 removed preselection MSCHANGEMSCHANGE
     else:
         print ("---------------------------------------------------------------------------------------------")
         print ("--------------------- WARNING! SET THE CORRECT NAME FOR SPC ACCURACY ------------------------")
         print ("----------------------------- DEFAULTING TO HIGHEST ACCURACY --------------------------------")
         print ("---------------------------------------------------------------------------------------------")
-        chunk.matchPhotos(accuracy=PS.HighestAccuracy, preselection=PS.GenericPreselection,
+        chunk.matchPhotos(downscale=1,
                           generic_preselection=True, reference_preselection=True, filter_mask=False,
                           keypoint_limit=40000,
-                          tiepoint_limit=8000)
+                          tiepoint_limit=8000) # accuracy changd to downscale in Metashape 1.6.4 removed preselection MSCHANGEMSCHANGE
 
     chunk.alignCameras(adaptive_fitting=False)
 
