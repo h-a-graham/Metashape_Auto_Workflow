@@ -1,7 +1,7 @@
 Variable,Input,description
 home,C:/Users/hughg/Desktop/Photoscan_Automate,# the project folder full path make sure to use forward slash
 document_title,PS_Auto_USA_test4,# name of the project (do not add extension)
-data_directory,C:/Users/hughg/Desktop/Photoscan_Automate/Andy_photos,# the directory where all images are being stored
+data_directory,C:/Users/hughg/Desktop/Photoscan_Automate/Andy_photos/,# the directory where all images are being stored - note the forward slash is required on the end of the path
 coordinate_system,EPSG:: 32114,# the coordinate system EPSG code (OSGB- EPSG:: 27700) EPSG:: 2027
 marker_coordinates_file,C:/Users/hughg/Desktop/Photoscan_Automate/markers/markers_USA.csv,"# marker coordinates - Not essential. If not desired enter ""NONE"""
 marker_coord_system,EPSG:: 32114,# enter the EPSG code for the crs that the marker coordinates are measures in.
@@ -36,3 +36,5 @@ Depth_Map_Pair_limit_value,80,# If not enabled this value does nothing number of
 DPC_Pair_limit_Enable,FALSE,"# sets a threshold for the number of pairs allowed for dense cloud creation. If ""FALSE"" then this is unlimited by default"
 DPC_limit_value,80,# If not enabled this value does nothing number of pairs allowed for depth filtering. 80 is conservative
 Rolling_Shutter_Correction,FALSE,"# Enables rolling shutter correction"
+altitude_adjustment,110,# Altitude adjustment (positive addition) in metres for DJI camera. True Absolute altitude = Home take off point altitude plus flight height. Altitude adjustment = True Absolute Heigh Height - Original absolute height
+
