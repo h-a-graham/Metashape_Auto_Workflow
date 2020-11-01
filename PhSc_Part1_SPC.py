@@ -93,16 +93,18 @@ def script_setup():
     except Exception:
         print ("Images do not have projection data... No Worries! continue without!")
 
-    #  New script section adding user defined altitude to source values in the reference pane - defined through input file line 38
+    #  New script section to correct for DJI absolute altitude problems - this portion of script reads the relative altitude (height of DJI drone above take off point) from the DJI meat data
+    #  The relative altitiude is then added to the known absolute altitude of the take of point(defined through input file line 38) to give a new value of z in the absolute altitude of the camers used by Metashape
+    #  This portion of the script needs to be checked to see how it interacts with non DJI drone data
 
     alt = float(altitude_adjustment) #MSCHANGE
 
     for camera in chunk.cameras:  #MSCHANGE
-        if camera.reference.location:  #MSCHANGE
-            coord = camera.reference.location #MSCHANGE
-            camera.reference.location = Metashape.Vector([coord.x, coord.y, coord.z + alt]) #MSCHANGE
-
-
+        if not camera.reference.location:
+            continue
+        if ("DJI/RelativeAltitude" in camera.photo.meta.keys()) and camera.reference.location:  #MSCHANGE
+            z = float(camera.photo.meta["DJI/RelativeAltitude"])
+            camera.reference.location = (camera.reference.location.x, camera.reference.location.y, z + alt)
 
 
 
