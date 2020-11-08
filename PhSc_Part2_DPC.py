@@ -1,10 +1,10 @@
 #######################################################################################################################
 # ------ PhotoScan workflow Part 2: -----------------------------------------------------------------------------------
 # ------  bundle adjustment and Dense point cloud creation -----------------------------------------
-# ------ Written for PhotoScan 1.4.3 64 bit -------------------------------------------------------------------------
+# ------ Written for PhotoScan 1.4.3 64 Revised for Metashape 1.6.4 October 2020------------------------
 #######################################################################################################################
 
-import Metashape as PS
+import Metashape as MS #MSCHANGE
 import os
 import csv
 import inspect
@@ -13,7 +13,7 @@ import sys
 import time
 
 # Clear the Console screen
-PS.app.console.clear()  # deactivate when running on ISCA
+MS.app.console_pane.clear()  # deactivate when running on ISCA MSCHANGE
 
 # GET TIME
 
@@ -68,12 +68,12 @@ def script_setup():
     print (coord_sys)
     name = "/" + doc_title + ".psx"
 
-    doc = PS.app.document
-    PS.app.gpu_mask = 2 ** len(PS.app.enumGPUDevices()) - 1  # activate all available GPUs
-    if PS.app.gpu_mask <= 1:
-        PS.app.cpu_enable = True  # Enable CPU for GPU accelerated processing (faster with 1 no difference with 0 GPUs)
-    elif PS.app.gpu_mask > 1:
-        PS.app.cpu_enable = False # Disable CPU for GPU accelerated tasks (faster when multiple GPUs are present)
+    doc = MS.app.document
+    MS.app.gpu_mask = 2 ** len(MS.app.enumGPUDevices()) - 1  # activate all available GPUs
+    if MS.app.gpu_mask <= 1:
+        MS.app.cpu_enable = True  # Enable CPU for GPU accelerated processing (faster with 1 no difference with 0 GPUs)
+    elif MS.app.gpu_mask > 1:
+        MS.app.cpu_enable = False # Disable CPU for GPU accelerated tasks (faster when multiple GPUs are present)
 
     if os.path.exists(home + '/' + doc_title + '.files/lock'):
         try:
@@ -89,7 +89,7 @@ def script_setup():
         print("quiting initiated")
         time.sleep(3)
         # doc.save(home + name)
-        PS.app.quit()
+        MS.app.quit()
         sys.exit()
 
     count_aligned(chunk)
@@ -179,7 +179,7 @@ def Optimise_Bundle_adj(chunk, doc, home, name, doc_title):
                           fit_k4=False, fit_p1=True, fit_p2=True, fit_p3=False,
                           fit_p4=False)  # As suggested in James, et al. (2017)
     print ("Optimization Parameters:")
-    print (PS.app.document.chunk.meta['optimize/fit_flags'])
+    print (MS.app.document.chunk.meta['optimize/fit_flags'])
 
     print("save")
     doc.save(home + name)
@@ -228,34 +228,34 @@ def build_DPC(chunk, dpc_quality, pair_dm_lim, pair_dm_val, pair_dpc_lim, pair_d
 
     if pair_dm_lim == "TRUE":  # This part determines if a pair limit is required for depth map filtering
         print ("Depth map pair filtering enabled: limit = " + str(pair_dm_val))
-        PS.app.settings.setValue('main/depth_filtering_limit', float(pair_dm_val))  # sets value based on input file
+        MS.app.settings.setValue('main/depth_filtering_limit', float(pair_dm_val))  # sets value based on input file
     else:
-        PS.app.settings.setValue('main/depth_filtering_limit', -1)  # restores default
+        MS.app.settings.setValue('main/depth_filtering_limit', -1)  # restores default
 
     if pair_dpc_lim == "TRUE":  # This part determines if a pair limit is required for depth map filtering
         print ("Dense cloud pair filtering enabled: limit = " + str(pair_dpc_val))
-        PS.app.settings.setValue('main/dense_cloud_max_neighbors', float(pair_dpc_val))  # sets value based on input file
+        MS.app.settings.setValue('main/dense_cloud_max_neighbors', float(pair_dpc_val))  # sets value based on input file
     else:
-        PS.app.settings.setValue('main/dense_cloud_max_neighbors', -1)
+        MS.app.settings.setValue('main/dense_cloud_max_neighbors', -1)
 
 
     print ("building Dense Point Cloud...")
     if dpc_quality == "LowestQuality":
-        chunk.buildDepthMaps(quality=PS.LowestQuality, filter=PS.MildFiltering, reuse_depth=True)
+        chunk.buildDepthMaps(downscale=5, filter_mode=MS.MildFiltering, reuse_depth=True)
     elif dpc_quality == "LowQuality":
-        chunk.buildDepthMaps(quality=PS.LowQuality, filter=PS.MildFiltering, reuse_depth=True)
+        chunk.buildDepthMaps(downscale=4, filter_mode=MS.MildFiltering, reuse_depth=True)
     elif dpc_quality == "MediumQuality":
-        chunk.buildDepthMaps(quality=PS.MediumQuality, filter=PS.MildFiltering, reuse_depth=True)
+        chunk.buildDepthMaps(downscale=3, filter_mode=MS.MildFiltering, reuse_depth=True)
     elif dpc_quality == "HighQuality":
-        chunk.buildDepthMaps(quality=PS.HighQuality, filter=PS.MildFiltering, reuse_depth=True)
+        chunk.buildDepthMaps(downscale=2, filter_mode=MS.MildFiltering, reuse_depth=True)
     elif dpc_quality == "UltraQuality":
-        chunk.buildDepthMaps(quality=PS.UltraQuality, filter=PS.MildFiltering, reuse_depth=True)
+        chunk.buildDepthMaps(downscale=1, filter_mode=MS.MildFiltering, reuse_depth=True)
     else:
         print ("---------------------------------------------------------------------------------------------")
         print ("--------------------- WARNING! SET A CORRECT NAME FOR DPC QUALITY ---------------------------")
         print ("------------------------------- DEFAULTING TO HIGH QUALITY ----------------------------------")
         print ("---------------------------------------------------------------------------------------------")
-        chunk.buildDepthMaps(quality=PS.HighQuality, filter=PS.MildFiltering, reuse_depth=True)
+        chunk.buildDepthMaps(downscale=2, filter_mode=MS.MildFiltering, reuse_depth=True)
 
     chunk.buildDenseCloud(point_colors=True)
 
@@ -282,3 +282,4 @@ def export_settings(home, doc_title, outside_BB, n_points_final_SPC, n_points_or
 if __name__ == '__main__':
     script_setup()
     print ("Total Time: " + str(datetime.now() - startTime))  # GET TOTAL TIME
+    print ("PART 2 SCRIPT FINISHED - Review Console Output for errors and review the dense cloud and remove obvious outliers")
