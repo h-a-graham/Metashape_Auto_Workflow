@@ -1,10 +1,9 @@
 #######################################################################################################################
 # ------ PhotoScan workflow Part 3:  ----------------------------------------------------------------------------------
 # ------ Export DPC, Build and Export: Textured Model, Othomosaic, DSM and PhotoScan Report ---------------------------
-# ------ Written for PhotoScan 1.4.3 64 bit Revised for Metashape 1.6.4 October 2020-------------------------------------------------------------------------
 #######################################################################################################################
 
-import Metashape as MS
+import Metashape as PS
 import os
 import csv
 import inspect
@@ -12,7 +11,7 @@ import shutil
 from datetime import datetime
 #hello
 # Clear the Console screen
-MS.app.console_pane.clear()  # comment out when using ISCA
+PS.app.console.clear()  # comment out when using ISCA
 
 startTime = datetime.now()
 print ("Script start time: " + str(startTime))
@@ -80,12 +79,12 @@ def script_setup():
     print (coord_sys)
     name = "/" + doc_title + ".psx"
 
-    doc = MS.app.document
-    MS.app.gpu_mask = 2 ** len(MS.app.enumGPUDevices()) - 1  # activate all available GPUs
-    if MS.app.gpu_mask <= 1:
-        MS.app.cpu_enable = True  # Enable CPU for GPU accelerated processing (faster with 1 no difference with 0 GPUs)
-    elif MS.app.gpu_mask > 1:
-        MS.app.cpu_enable = False # Disable CPU for GPU accelerated tasks (faster when multiple GPUs are present)
+    doc = PS.app.document
+    PS.app.gpu_mask = 2 ** len(PS.app.enumGPUDevices()) - 1  # activate all available GPUs
+    if PS.app.gpu_mask <= 1:
+        PS.app.cpu_enable = True  # Enable CPU for GPU accelerated processing (faster with 1 no difference with 0 GPUs)
+    elif PS.app.gpu_mask > 1:
+        PS.app.cpu_enable = False # Disable CPU for GPU accelerated tasks (faster when multiple GPUs are present)
 
 
     doc.open(home + name, read_only=False)
@@ -125,7 +124,7 @@ def export_DPC(chunk, doc_title, exportdir, e_DPC):  # export points
         if chunk.dense_cloud is not None:
             print ("Exporting Dense Point Cloud")
             dpc_name = "/" + doc_title + "_dpc_export.laz"
-            chunk.exportPoints(exportdir + dpc_name, crs=chunk.crs)  # specify projection to use. Precision attribute has been removesd in Metasahep
+            chunk.exportPoints(exportdir + dpc_name, precision=3, projection=chunk.crs)  # specify projection to use.
         else:
             print ("you need to build a dense point cloud")
     else:
@@ -139,21 +138,21 @@ def build_mesh(chunk, doc, home, name, b_mesh, mesh_qual):
         print ("building mesh")
 
         if mesh_qual == "LowFaceCount":
-            chunk.buildModel(surface_type=MS.HeightField, source_data=MS.DenseCloudData, interpolation= MS.EnabledInterpolation,
-                             face_count=MS.LowFaceCount, vertex_colors=True)
+            chunk.buildModel(surface=PS.HeightField, source=PS.DenseCloudData, interpolation= PS.EnabledInterpolation,
+                             face_count=PS.LowFaceCount, vertex_colors=True)
         elif mesh_qual == "MediumFaceCount":
-            chunk.buildModel(surface_type=MS.HeightField, source_data=MS.DenseCloudData, interpolation= MS.EnabledInterpolation,
-                             face_count=MS.MediumFaceCount, vertex_colors=True)
+            chunk.buildModel(surface=PS.HeightField, source=PS.DenseCloudData, interpolation= PS.EnabledInterpolation,
+                             face_count=PS.MediumFaceCount, vertex_colors=True)
         elif mesh_qual == "HighFaceCount":
-            chunk.buildModel(surface_type=MS.HeightField, source_data=MS.DenseCloudData, interpolation= MS.EnabledInterpolation,
-                             face_count=MS.HighFaceCount, vertex_colors=True)
+            chunk.buildModel(surface=PS.HeightField, source=PS.DenseCloudData, interpolation= PS.EnabledInterpolation,
+                             face_count=PS.HighFaceCount, vertex_colors=True)
         else:
             print ("---------------------------------------------------------------------------------------------")
             print ("--------------------- WARNING! SET THE CORRECT NAME FOR MESH QUALITY ------------------------")
             print ("------------------------------- DEFAULTING TO HIGH FACE COUNT -------------------------------")
             print ("---------------------------------------------------------------------------------------------")
-            chunk.buildModel(surface_type=MS.HeightField, source_data=MS.DenseCloudData, interpolation=MS.EnabledInterpolation,
-                             face_count=MS.HighFaceCount, vertex_colors=True)
+            chunk.buildModel(surface=PS.HeightField, source=PS.DenseCloudData, interpolation=PS.EnabledInterpolation,
+                             face_count=PS.HighFaceCount, vertex_colors=True)
         doc.save(home + name)  # save
 
     else:
@@ -163,8 +162,8 @@ def build_mesh(chunk, doc, home, name, b_mesh, mesh_qual):
 def build_texture(chunk, doc, home, name, b_texture, e_model, exportdir, doc_title):
     if b_texture == "TRUE":
         print ("building texture")
-        chunk.buildUV(mapping=MS.GenericMapping)
-        chunk.buildTexture(blending=MS.MosaicBlending, size=2048, fill_holes=True, ghosting_filter=True)
+        chunk.buildUV(mapping=PS.GenericMapping)
+        chunk.buildTexture(blending=PS.MosaicBlending, size=2048, fill_holes=True, ghosting_filter=True)
 
         doc.save(home + name)  # save
 
@@ -175,9 +174,9 @@ def build_texture(chunk, doc, home, name, b_texture, e_model, exportdir, doc_tit
         if chunk.model is not None:
             print ("exporting textured model")
             model_path = exportdir + "/" + doc_title + "_tex_model.ply"
-            chunk.exportModel(model_path, binary=True, precision=3, texture_format=MS.ImageFormatJPEG, texture=True,
+            chunk.exportModel(model_path, binary=True, precision=3, texture_format=PS.ImageFormatJPEG, texture=True,
                         normals=False, colors=True, udim=False,
-                        strip_extensions=False, raster_transform=MS.RasterTransformNone)
+                        strip_extensions=False, raster_transform=PS.RasterTransformNone)
 
         else:
             print (" WARNING: must build mesh and texture before export")
@@ -189,7 +188,7 @@ def build_ortho(chunk, exportdir, doc, home, name, doc_title, b_ortho, e_ortho_l
                 bt_ortho_lr, bt_ortho_hr):  # Currently no option to add "description metadata to exports add when available!!!
     if b_ortho == "TRUE":
         print ("building Orthomosaic")
-        chunk.buildOrthomosaic(surface_data=MS.ModelData, blending_mode=MS.MosaicBlending, fill_holes=True)
+        chunk.buildOrthomosaic(surface=PS.ModelData, blending=PS.MosaicBlending, fill_holes=True)
         doc.save(home + name)  # save
     else:
         print("build orthomosaic option not selected")
