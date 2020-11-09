@@ -1,17 +1,17 @@
 #######################################################################################################################
-# ------ Metashape workflow Part 1: -----------------------------------------------------------------------------------
+# ------ PhotoScan workflow Part 1: -----------------------------------------------------------------------------------
 # ------ Image Quality analysis, Camera Alignment analysis, Reprojection Error Analysis, Sparse Point Cloud Creation --
 # ------ and Reference settings ---------------------------------------------------------------------------------------
 #######################################################################################################################
 # IMPORTS #
-import Metashape as PS
+import Metashape as MS
 import math
 import os
 import csv
 import inspect
 from datetime import datetime
 
-PS.app.console.clear() # comment out when using ISCA
+MS.app.console_pane.clear() # comment out when using ISCA
 
 startTime = datetime.now()
 print ("Script start time: " + str(startTime))
@@ -50,10 +50,10 @@ def script_setup():
     spc_quality = var_list[10]
 
     reproj_err_limit = var_list[32]
-    
-    rolling_shutter = var_list[37]
 
     rolling_shutter = var_list[37]
+
+    altitude_adjustment = var_list[38]
     
     print (home)
     print(doc_title)
@@ -61,41 +61,57 @@ def script_setup():
     print (coord_sys)
     name = "/" + doc_title + ".psx"
 
-    doc = PS.app.document
+    doc = MS.app.document
 
-    PS.app.gpu_mask = 2 ** len(PS.app.enumGPUDevices()) - 1  # activate all available GPUs
-    if PS.app.gpu_mask <= 1:
-        PS.app.cpu_enable = True  # Enable CPU for GPU accelerated processing (faster with 1 no difference with 0 GPUs)
-    elif PS.app.gpu_mask > 1:
-        PS.app.cpu_enable = False # Disable CPU for GPU accelerated tasks (faster when multiple GPUs are present)
+    MS.app.gpu_mask = 2 ** len(MS.app.enumGPUDevices()) - 1  # activate all available GPUs
+    if MS.app.gpu_mask <= 1:
+        MS.app.cpu_enable = True  # Enable CPU for GPU accelerated processing (faster with 1 no difference with 0 GPUs)
+    elif MS.app.gpu_mask > 1:
+        MS.app.cpu_enable = False # Disable CPU for GPU accelerated tasks (faster when multiple GPUs are present)
 
     doc.save(home+name)
 
     # Locate and add photos
     photos = os.listdir(datadir)  # Get the photos filenames
+    print (photos)
     photos = [os.path.join(datadir, p) for p in photos]  # convert to full paths
+    print (photos)
 
-    chunk = PS.app.document.addChunk()  # create a chunk
+    chunk = MS.app.document.addChunk()  # create a chunk -  Warning you need to delete the original automatically created chunk when Metashape opens if running the script from tools
 
-    chunk.addPhotos([photos])  # add photos to chunk
+    chunk.addPhotos(photos)  # add photos to chunk MSCHANGE
 
     if rolling_shutter == 'TRUE':
         chunk.sensors[0].rolling_shutter = True  # Option to enable Rolling shutter compensation
 
-    
-    new_crs = PS.CoordinateSystem(coord_sys)  # define desired Coordinate System
+    new_crs = MS.CoordinateSystem(coord_sys)  # define desired Coordinate System
 
     try:
         for camera in chunk.cameras:  # set the coordinates for cameras
-            camera.reference.location = new_crs.project(chunk.crs.unproject(camera.reference.location))
+            camera.reference.location = MS.CoordinateSystem.transform(camera.reference.location,chunk.crs, new_crs) # old script: new_crs.project(chunk.crs.unproject(camera.reference.location))#MSCHANGE
     except Exception:
         print("Images do not have projection data... No Worries! continue without!")
+
+    #  New script section to correct for DJI absolute altitude problems - this portion of script reads the relative altitude (height of DJI drone above take off point) from the DJI meat data
+    #  The relative altitiude is then added to the known absolute altitude of the take of point(defined through input file line 38) to give a new value of z in the absolute altitude of the camers used by Metashape
+    #  This portion of the script needs to be checked to see how it interacts with non DJI drone data
+
+    alt = float(altitude_adjustment) #MSCHANGE
+
+    for camera in chunk.cameras:  #MSCHANGE
+        if not camera.reference.location:
+            continue
+        if ("DJI/RelativeAltitude" in camera.photo.meta.keys()) and camera.reference.location:  #MSCHANGE
+            z = float(camera.photo.meta["DJI/RelativeAltitude"])
+            camera.reference.location = (camera.reference.location.x, camera.reference.location.y, z + alt)
+
+
 
     # Optional import of markers if desired...
     if marker_coords == "NONE":  # if no markers are given then pass
         pass
     else:
-        chunk.loadReference(marker_coords, columns="nxyzXYZ", delimiter=",", group_delimiters=False,  # if a path is given markers are added
+        chunk.importReference(marker_coords, columns="nxyzXYZ", delimiter=",", group_delimiters=False,  # if a path is given markers are added MSCHANGE
                             skip_rows=1, ignore_labels=False, create_markers=True, threshold=0.1)
 
         if marker_crs == coord_sys:  # if marker and project crs match then pass otherwise convert marker crs
@@ -105,6 +121,7 @@ def script_setup():
                 marker.reference.location = new_crs.project(chunk.crs.unproject(marker.reference.location))
 
     chunk.crs = new_crs  # set project coordinate system
+    chunk.updateTransform #MSCHANGE
 
     doc.save(home + name)
 
@@ -136,7 +153,7 @@ def preprocess(Est_img_qual, img_qual_thresh, chunk):
     # Estimating Image Quality and excluding poor images
     if Est_img_qual == "TRUE":
         print("running image quality filter...")
-        chunk.estimateImageQuality()
+        chunk.analyzePhotos()  # MSCHANGE
 
         qual = float(img_qual_thresh)
 
@@ -199,34 +216,34 @@ def build_SPC(chunk, spc_quality):
     print("building sparse point cloud...")
     # Match and Align Photos and Cameras
     if spc_quality == "LowestAccuracy":
-        chunk.matchPhotos(accuracy=PS.LowestAccuracy, preselection=PS.GenericPreselection,
+        chunk.matchPhotos(downscale=5,
                           generic_preselection=True, reference_preselection=True, filter_mask=False, keypoint_limit=40000,
-                          tiepoint_limit=8000)  # LowestAccuracy
+                          tiepoint_limit=8000)  # LowestAccuracy accuracy changed to downscale in Metashape 1.6.4 removed preselection MSCHANGEMSCHANGE
     elif spc_quality == "LowAccuracy":
-        chunk.matchPhotos(accuracy=PS.LowAccuracy, preselection=PS.GenericPreselection,
+        chunk.matchPhotos(downscale=4,
                           generic_preselection=True, reference_preselection=True, filter_mask=False, keypoint_limit=40000,
-                          tiepoint_limit=8000)
+                          tiepoint_limit=8000) # accuracy changed to downscale in Metashape 1.6.4, removed preselection MSCHANGEMSCHANGE
     elif spc_quality == "MediumAccuracy":
-        chunk.matchPhotos(accuracy=PS.MediumAccuracy, preselection=PS.GenericPreselection,
+        chunk.matchPhotos(downscale=3,
                           generic_preselection=True, reference_preselection=True, filter_mask=False, keypoint_limit=40000,
-                          tiepoint_limit=8000)
+                          tiepoint_limit=8000) #accuracy changed to downscale in Metashape 1.6.4 removed preselection MSCHANGEMSCHANGE
     elif spc_quality == "HighAccuracy":
-        chunk.matchPhotos(accuracy=PS.HighAccuracy, preselection=PS.GenericPreselection,
+        chunk.matchPhotos(downscale=2,
                           generic_preselection=True, reference_preselection=True, filter_mask=False, keypoint_limit=40000,
-                          tiepoint_limit=8000)
+                          tiepoint_limit=8000)# accuracy changed to downscale in Metashape 1.6.4 removed preselection MSCHANGEMSCHANGE
     elif spc_quality == "HighestAccuracy":
-        chunk.matchPhotos(accuracy=PS.HighestAccuracy, preselection=PS.GenericPreselection,
+        chunk.matchPhotos(downscale=1,
                           generic_preselection=True, reference_preselection=True, filter_mask=False, keypoint_limit=40000,
-                          tiepoint_limit=8000)
+                          tiepoint_limit=8000) # accuracy changed to downscale in Metashape 1.6.4 removed preselection MSCHANGEMSCHANGE
     else:
         print("---------------------------------------------------------------------------------------------")
         print("--------------------- WARNING! SET THE CORRECT NAME FOR SPC ACCURACY ------------------------")
         print("----------------------------- DEFAULTING TO HIGHEST ACCURACY --------------------------------")
         print("---------------------------------------------------------------------------------------------")
-        chunk.matchPhotos(accuracy=PS.HighestAccuracy, preselection=PS.GenericPreselection,
+        chunk.matchPhotos(downscale=1,
                           generic_preselection=True, reference_preselection=True, filter_mask=False,
                           keypoint_limit=40000,
-                          tiepoint_limit=8000)
+                          tiepoint_limit=8000) # accuracy changd to downscale in Metashape 1.6.4 removed preselection MSCHANGEMSCHANGE
 
     chunk.alignCameras(adaptive_fitting=False)
 
@@ -291,7 +308,7 @@ def ref_setting_setup(doc, points, projections,
     chunk = doc.chunk
     # get number of aligned cameras
     n_aligned, n_not_aligned = count_aligned(chunk)
-    print("number (%) of aligned cameras is:")
+    print ("number (%) of aligned cameras is:")
     try:
         print(str(n_aligned) + "(" + str(n_aligned/(n_aligned+n_not_aligned)*100)+ "%)")
     except ZeroDivisionError:
@@ -336,8 +353,8 @@ def filter_reproj_err (chunk, reproj_err_limit):
     print("filtering tiepoints by reprojection error (threshold = " + str(reproj_err_limit) + ")")
     Reproj_Err_Limit = float(reproj_err_limit)
 
-    f = PS.PointCloud.Filter()
-    f.init(chunk, PS.PointCloud.Filter.ReprojectionError)
+    f = MS.PointCloud.Filter()
+    f.init(chunk, MS.PointCloud.Filter.ReprojectionError)
     f.selectPoints(Reproj_Err_Limit)
     nselected = len([p for p in chunk.point_cloud.points if p.selected])
     total_points = len(chunk.point_cloud.points)
@@ -374,11 +391,8 @@ def export_settings(orig_n_cams, n_filter_removed, perc_filter_removed, real_qua
             writer = csv.writer(f)
             writer.writerows(zip(opt_list, params_list))
 
-
+    print ("Now it's time to do some manual cleaning as per the protocol......") #MSCHANGE
 
 if __name__ == '__main__':
     script_setup()
-
-#######################################################################################################################
-# Now it's time to do some manual cleaning as per the protocol:
 
