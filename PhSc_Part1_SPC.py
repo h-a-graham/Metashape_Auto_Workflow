@@ -2,7 +2,6 @@
 # ------ PhotoScan workflow Part 1: -----------------------------------------------------------------------------------
 # ------ Image Quality analysis, Camera Alignment analysis, Reprojection Error Analysis, Sparse Point Cloud Creation --
 # ------ and Reference settings ---------------------------------------------------------------------------------------
-# ------ Written for PhotoScan 1.4.3 64 bit --Revised for Metashape 1.6.4 October 2020-------------------------------------------------------------------------
 #######################################################################################################################
 # IMPORTS #
 import Metashape as MS
@@ -321,7 +320,7 @@ def ref_setting_setup(doc, points, projections,
         print ("No cameras loaded - something isn't aligned...")
 
     # Set up Reference Settings:
-    cam_loc_acc = [20, 20, 50]    # xyz metres
+    cam_loc_acc = [15, 15, 20]    # xyz metres
     mark_loc_acc = [0.02, 0.02, 0.05]  # xyz metres
     mark_proj_acc = 2  # pixels
     chunk.camera_location_accuracy = cam_loc_acc  # units in m
