@@ -1,8 +1,7 @@
 #######################################################################################################################
-# ------ PhotoScan workflow Part 1: -----------------------------------------------------------------------------------
+# ------ Metashape workflow Part 1: -----------------------------------------------------------------------------------
 # ------ Image Quality analysis, Camera Alignment analysis, Reprojection Error Analysis, Sparse Point Cloud Creation --
 # ------ and Reference settings ---------------------------------------------------------------------------------------
-# ------ Written for PhotoScan 1.4.3 64 bit ---------------------------------------------------------------------------
 #######################################################################################################################
 # IMPORTS #
 import Metashape as PS
@@ -90,7 +89,7 @@ def script_setup():
         for camera in chunk.cameras:  # set the coordinates for cameras
             camera.reference.location = new_crs.project(chunk.crs.unproject(camera.reference.location))
     except Exception:
-        print ("Images do not have projection data... No Worries! continue without!")
+        print("Images do not have projection data... No Worries! continue without!")
 
     # Optional import of markers if desired...
     if marker_coords == "NONE":  # if no markers are given then pass
@@ -124,19 +123,19 @@ def script_setup():
     # SAVE DOCUMENT
     doc.save(home + name)
     if perc_ab_thresh > 20:
-        print ("-------------------------------------------------------------")
-        print ("WARNING >20% OF POINTS ABOVE REPROJECTION ERROR THRESHOLD!!!!")
-        print ("-------------------------------------------------------------")
+        print("-------------------------------------------------------------")
+        print("WARNING >20% OF POINTS ABOVE REPROJECTION ERROR THRESHOLD!!!!")
+        print("-------------------------------------------------------------")
 
         # Get Execution Time...
-    print ("Total Time: " + str(datetime.now() - startTime))  # GET TOTAL TIME
+    print("Total Time: " + str(datetime.now() - startTime))  # GET TOTAL TIME
 
 
 def preprocess(Est_img_qual, img_qual_thresh, chunk):
 
     # Estimating Image Quality and excluding poor images
     if Est_img_qual == "TRUE":
-        print ("running image quality filter...")
+        print("running image quality filter...")
         chunk.estimateImageQuality()
 
         qual = float(img_qual_thresh)
@@ -152,9 +151,9 @@ def preprocess(Est_img_qual, img_qual_thresh, chunk):
             else:
                 kept_img_quals.append(IQ)
 
-        print ("number of cameras disabled = " + str(len(dumped_img_quals)))
-        print ("percent of cameras disabled = " + str(round((len(dumped_img_quals)/(len(kept_img_quals)+len(dumped_img_quals))*100), 1)) + "%")
-        print ("number of cameras enabled = " + str(len(kept_img_quals)))
+        print("number of cameras disabled = " + str(len(dumped_img_quals)))
+        print("percent of cameras disabled = " + str(round((len(dumped_img_quals)/(len(kept_img_quals)+len(dumped_img_quals))*100), 1)) + "%")
+        print("number of cameras enabled = " + str(len(kept_img_quals)))
 
         p09 = [i for i in kept_img_quals if i >= 0.9]
         p08 = [i for i in kept_img_quals if i >= 0.8]
@@ -162,27 +161,27 @@ def preprocess(Est_img_qual, img_qual_thresh, chunk):
         p06 = [i for i in kept_img_quals if i >= 0.6]
         p05 = [i for i in kept_img_quals if i >= 0.5]
 
-        print ("number of photos with image quality >= 0.9: " + str(len(p09)))
-        print ("percent of cameras with image quality >= 0.9: " + str(round((len(p09)/(len(kept_img_quals)+len(dumped_img_quals))*100), 1)) + "%")
+        print("number of photos with image quality >= 0.9: " + str(len(p09)))
+        print("percent of cameras with image quality >= 0.9: " + str(round((len(p09)/(len(kept_img_quals)+len(dumped_img_quals))*100), 1)) + "%")
 
-        print ("number of photos with image quality >= 0.8: " + str(len(p08)))
-        print ("percent of cameras with image quality >= 0.8: " + str(round((len(p08)/(len(kept_img_quals)+len(dumped_img_quals))*100), 1)) + "%")
+        print("number of photos with image quality >= 0.8: " + str(len(p08)))
+        print("percent of cameras with image quality >= 0.8: " + str(round((len(p08)/(len(kept_img_quals)+len(dumped_img_quals))*100), 1)) + "%")
 
-        print ("number of photos with image quality >= 0.7: " + str(len(p07)))
-        print ("percent of cameras with image quality >= 0.7: " + str(round((len(p07)/(len(kept_img_quals)+len(dumped_img_quals))*100), 1)) + "%")
+        print("number of photos with image quality >= 0.7: " + str(len(p07)))
+        print("percent of cameras with image quality >= 0.7: " + str(round((len(p07)/(len(kept_img_quals)+len(dumped_img_quals))*100), 1)) + "%")
 
-        print ("number of photos with image quality >= 0.6: " + str(len(p06)))
-        print ("percent of cameras with image quality >= 0.6: " + str(round((len(p06)/(len(kept_img_quals)+len(dumped_img_quals))*100), 1)) + "%")
+        print("number of photos with image quality >= 0.6: " + str(len(p06)))
+        print("percent of cameras with image quality >= 0.6: " + str(round((len(p06)/(len(kept_img_quals)+len(dumped_img_quals))*100), 1)) + "%")
 
-        print ("number of photos with image quality >= 0.5: " + str(len(p05)))
-        print ("percent of cameras with image quality >= 0.5: " + str(round((len(p05)/(len(kept_img_quals)+len(dumped_img_quals))*100), 1)) + "%")
+        print("number of photos with image quality >= 0.5: " + str(len(p05)))
+        print("percent of cameras with image quality >= 0.5: " + str(round((len(p05)/(len(kept_img_quals)+len(dumped_img_quals))*100), 1)) + "%")
 
         orig_n_cams = len(dumped_img_quals) + len(kept_img_quals)
         n_filter_removed = len(dumped_img_quals)
         perc_filter_removed = round(((n_filter_removed/orig_n_cams)*100), 1)
         real_qual_thresh = min(kept_img_quals)
     else:
-        print ("image quality filtering skipped...")
+        print("image quality filtering skipped...")
         chunk.estimateImageQuality()
         all_imgs_qual = []
         for camera in chunk.cameras:
@@ -197,7 +196,7 @@ def preprocess(Est_img_qual, img_qual_thresh, chunk):
     return orig_n_cams, n_filter_removed, perc_filter_removed, real_qual_thresh
 
 def build_SPC(chunk, spc_quality):
-    print ("building sparse point cloud...")
+    print("building sparse point cloud...")
     # Match and Align Photos and Cameras
     if spc_quality == "LowestAccuracy":
         chunk.matchPhotos(accuracy=PS.LowestAccuracy, preselection=PS.GenericPreselection,
@@ -220,10 +219,10 @@ def build_SPC(chunk, spc_quality):
                           generic_preselection=True, reference_preselection=True, filter_mask=False, keypoint_limit=40000,
                           tiepoint_limit=8000)
     else:
-        print ("---------------------------------------------------------------------------------------------")
-        print ("--------------------- WARNING! SET THE CORRECT NAME FOR SPC ACCURACY ------------------------")
-        print ("----------------------------- DEFAULTING TO HIGHEST ACCURACY --------------------------------")
-        print ("---------------------------------------------------------------------------------------------")
+        print("---------------------------------------------------------------------------------------------")
+        print("--------------------- WARNING! SET THE CORRECT NAME FOR SPC ACCURACY ------------------------")
+        print("----------------------------- DEFAULTING TO HIGHEST ACCURACY --------------------------------")
+        print("---------------------------------------------------------------------------------------------")
         chunk.matchPhotos(accuracy=PS.HighestAccuracy, preselection=PS.GenericPreselection,
                           generic_preselection=True, reference_preselection=True, filter_mask=False,
                           keypoint_limit=40000,
@@ -292,16 +291,16 @@ def ref_setting_setup(doc, points, projections,
     chunk = doc.chunk
     # get number of aligned cameras
     n_aligned, n_not_aligned = count_aligned(chunk)
-    print ("number (%) of aligned cameras is:")
+    print("number (%) of aligned cameras is:")
     try:
-        print (str(n_aligned) + "(" + str(n_aligned/(n_aligned+n_not_aligned)*100)+ "%)")
+        print(str(n_aligned) + "(" + str(n_aligned/(n_aligned+n_not_aligned)*100)+ "%)")
     except ZeroDivisionError:
-        print ("no cameras are aligned!!!!")
-    print ("number of cameras not aligned is:")
+        print("no cameras are aligned!!!!")
+    print("number of cameras not aligned is:")
     try:
-        print (str(n_not_aligned) + "(" + str(n_not_aligned/(n_aligned+n_not_aligned)*100)+ "%)")
+        print(str(n_not_aligned) + "(" + str(n_not_aligned/(n_aligned+n_not_aligned)*100)+ "%)")
     except ZeroDivisionError:
-        print ("No cameras loaded - something isn't aligned...")
+        print("No cameras loaded - something isn't aligned...")
 
     # Set up Reference Settings:
     cam_loc_acc = [20, 20, 50]    # xyz metres
@@ -315,9 +314,9 @@ def ref_setting_setup(doc, points, projections,
 
     reproj_error = sum(total_error)/len(total_error) # get average rmse for all cameras
 
-    print ("mean reprojection error for point cloud:")
-    print (round(reproj_error, 3))
-    print ("max reprojection error is: " + str(max(total_error)))
+    print("mean reprojection error for point cloud:")
+    print(round(reproj_error, 3))
+    print("max reprojection error is: " + str(max(total_error)))
 
     if reproj_error < 1:
         reproj_error = 1
@@ -334,7 +333,7 @@ def ref_setting_setup(doc, points, projections,
 def filter_reproj_err (chunk, reproj_err_limit):
     # Filter points by their reprojection error and remove those with values > 0.45 (or the limit set in the input file)
 
-    print ("filtering tiepoints by reprojection error (threshold = " + str(reproj_err_limit) + ")")
+    print("filtering tiepoints by reprojection error (threshold = " + str(reproj_err_limit) + ")")
     Reproj_Err_Limit = float(reproj_err_limit)
 
     f = PS.PointCloud.Filter()
@@ -345,16 +344,16 @@ def filter_reproj_err (chunk, reproj_err_limit):
     perc_ab_thresh = round((nselected/total_points*100), 1)
 
     if perc_ab_thresh > 20:
-        print ("---------------------------------------------------------")
-        print ("WARNING >20% OF POINTS ABOVE REPROJECTION ERROR THRESHOLD")
-        print ("---------------------------------------------------------")
+        print("---------------------------------------------------------")
+        print("WARNING >20% OF POINTS ABOVE REPROJECTION ERROR THRESHOLD")
+        print("---------------------------------------------------------")
 
     print("number of points below " + str(Reproj_Err_Limit) +
           " Reprojection Error Limit: " + str(nselected) + "/" +
           str(total_points) + "(" + str(perc_ab_thresh) +
           "%)")
 
-    print ("Removing points above error threshold...")
+    print("Removing points above error threshold...")
     f.removePoints(Reproj_Err_Limit)
 
     return total_points, perc_ab_thresh, nselected

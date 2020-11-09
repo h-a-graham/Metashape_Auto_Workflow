@@ -1,7 +1,10 @@
 # Metashape_Workflow
-An automated workflow for processing drone imagery in PhotoScan
+An automated workflow for processing drone imagery in Agisoft Metashape (v1.7)
+
+Developed by Hugh Graham, Andrew Cunliffe, Pia Benaud and Glenn Slade 
 
 
+# Instructions
 **1. Interactive: Collate & Prepare Datasets**
 - Find/start entry in the Image-Based Modelling Processing Log (use the ‘scripted log (for V2)’). Keep this log up to date as new parameters are confirmed and steps are completed.
 - Create project directory (E.g. ‘Sev_SEG_20180531’, note updated date code format).
