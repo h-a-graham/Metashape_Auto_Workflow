@@ -35,5 +35,7 @@ Depth_Map_Pair_limit_Enable,FALSE,"# sets a threshold for the number of pairs al
 Depth_Map_Pair_limit_value,80,# If not enabled this value does nothing number of pairs allowed for depth filtering. 80 is conservative
 DPC_Pair_limit_Enable,FALSE,"# sets a threshold for the number of pairs allowed for dense cloud creation. If ""FALSE"" then this is unlimited by default"
 DPC_limit_value,80,# If not enabled this value does nothing number of pairs allowed for depth filtering. 80 is conservative
-Rolling_Shutter_Correction,FALSE,"# Enables rolling shutter correction"
-altitude_adjustment,150,# GNSS derived (if possibe) absolute Height of Take off point for DJI Drone only - used to correct DJI camera absolute altitude values
+rolling_Shutter_Correction,FALSE,"# Enables rolling shutter correction"
+revise_altitude,FALSE,"# Enables altitude correction in DJI images"
+altitude_adjustment,150,# GNSS derived (if possible) absolute height of Take off point for DJI Drone only - used to correct DJI camera absolute altitude values
+depth_filter,AggressiveFiltering,# Filter_mode for buildDepthMaps choose between (NoFiltering,MildFiltering,ModerateFiltering,AggressiveFiltering)
