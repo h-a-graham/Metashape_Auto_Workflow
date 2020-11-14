@@ -53,7 +53,9 @@ def script_setup():
 
     rolling_shutter = var_list[37]
 
-    altitude_adjustment = var_list[38] #MSCHANGE
+    revise_altitude = var_list[38]
+
+    altitude_adjustment = var_list[39] #MSCHANGE
     
     print (home)
     print(doc_title)
@@ -101,7 +103,7 @@ def script_setup():
     for camera in chunk.cameras:  #MSCHANGE
         if not camera.reference.location:
             continue
-        if ("DJI/RelativeAltitude" in camera.photo.meta.keys()) and camera.reference.location:  #MSCHANGE
+        if ("DJI/RelativeAltitude" in camera.photo.meta.keys()) and camera.reference.location and revise_altitude == "TRUE":  #MSCHANGE
             z = float(camera.photo.meta["DJI/RelativeAltitude"])
             camera.reference.location = (camera.reference.location.x, camera.reference.location.y, z + alt)
 
