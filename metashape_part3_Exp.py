@@ -202,10 +202,11 @@ def build_ortho(chunk, exportdir, doc, home, name, doc_title, b_ortho, e_ortho_l
             if chunk.orthomosaic is not None:
                 print("exporting low resolution orthomosaic")
                 ortho_res_lr = float(r_ortho_lr)  # set the desired resolution
-
+                compression = MS.ImageCompression()
+                compression.tiff_big = True
                 ortho_path_lr = exportdir + "/" + doc_title + "_Ortho_LR_"+ str(o_mm_lr) + "mm.tiff"
                 chunk.exportRaster(ortho_path_lr, raster_transform=MS.RasterTransformNone, resolution_x=ortho_res_lr,
-                                        resolution_y=ortho_res_lr, source_data=MS.OrthomosaicData, save_alpha=True)
+                                        resolution_y=ortho_res_lr, source_data=MS.OrthomosaicData, image_compression = compression, save_alpha=True)
 
             else:
                 print ("must build Orthomosaic before export")
@@ -216,10 +217,11 @@ def build_ortho(chunk, exportdir, doc, home, name, doc_title, b_ortho, e_ortho_l
             if chunk.orthomosaic is not None:
                 print("exporting low resolution orthomosaic")
                 ortho_res_lr = float(r_ortho_lr)  # set the desired resolution
-
+                compression = MS.ImageCompression()
+                compression.tiff_compression = MS.ImageCompression.TiffCompressionNone
                 ortho_path_lr = exportdir + "/" + doc_title + "_Ortho_LR_" + str(o_mm_lr) + "mm.tiff"
                 chunk.exportRaster(ortho_path_lr, raster_transform=MS.RasterTransformNone, resolution_x=ortho_res_lr,
-                                        resolution_y=ortho_res_lr, source_data=MS.OrthomosaicData, save_alpha=True)
+                                        resolution_y=ortho_res_lr, source_data=MS.OrthomosaicData, image_compression = compression, save_alpha=True)
 
             else:
                 print ("must build Orthomosaic before export")
@@ -232,10 +234,11 @@ def build_ortho(chunk, exportdir, doc, home, name, doc_title, b_ortho, e_ortho_l
                 print("exporting high resolution orthomosaic")
 
                 ortho_res_hr = float(r_ortho_hr)  # set the desired resolution
-
+                compression = MS.ImageCompression()
+                compression.tiff_big = True
                 ortho_path_hr = exportdir + "/" + doc_title + "_Ortho_HR_" + str(o_mm_hr) + "mm.tiff"
                 chunk.exportRaster(ortho_path_hr, raster_transform=MS.RasterTransformNone, resolution_x=ortho_res_hr,
-                                        resolution_y=ortho_res_hr, source_data=MS.OrthomosaicData, save_alpha=True)
+                                        resolution_y=ortho_res_hr, source_data=MS.OrthomosaicData, image_compression = compression, save_alpha=True)
 
             else:
                 print ("must build Orthomosaic before export")
@@ -248,7 +251,8 @@ def build_ortho(chunk, exportdir, doc, home, name, doc_title, b_ortho, e_ortho_l
                 print("exporting high resolution orthomosaic")
 
                 ortho_res_hr = float(r_ortho_hr)  # set the desired resolution
-
+                compression = MS.ImageCompression()
+                compression.tiff_compression = MS.ImageCompression.TiffCompressionNone
                 ortho_path_hr = exportdir + "/" + doc_title + "_Ortho_HR_" + str(o_mm_hr) + "mm.tiff"
                 chunk.exportRaster(ortho_path_hr, raster_transform=MS.RasterTransformNone, resolution_x=ortho_res_hr,
                                         resolution_y=ortho_res_hr, source_data=MS.OrthomosaicData, save_alpha=True)
@@ -279,9 +283,11 @@ def build_dsm(chunk, exportdir, doc_title, doc, home, name, b_dsm, e_dsm_lr, e_d
             if chunk.elevation is not None:
                 print ("exporting low resolution DSM")
                 dsm_res_lr = float(r_dsm_lr)
+                compression = MS.ImageCompression()
+                compression.tiff_big = True
                 dsm_path_lr = exportdir + "/" + doc_title + "_DSM_LR_" + str(mm_lr) +"mm.tiff"
                 chunk.exportRaster(dsm_path_lr, raster_transform=MS.RasterTransformNone, resolution_x=dsm_res_lr,
-                                resolution_y=dsm_res_lr, source_data=MS.ElevationData)
+                                resolution_y=dsm_res_lr, source_data=MS.ElevationData, image_compression = compression)
             else:
                 print ("build DSM before trying to export")
         else:
@@ -291,8 +297,10 @@ def build_dsm(chunk, exportdir, doc_title, doc, home, name, b_dsm, e_dsm_lr, e_d
             if chunk.elevation is not None:
                 print ("exporting low resolution DSM")
                 dsm_res_lr = float(r_dsm_lr)
+                compression = MS.ImageCompression()
+                compression.tiff_compression = MS.ImageCompression.TiffCompressionNone
                 dsm_path_lr = exportdir + "/" + doc_title + "_DSM_LR_" + str(mm_lr) +"mm.tiff"
-                chunk.exportRaster(dsm_path_lr, raster_transform=MS.RasterTransformNone, resolution_x=dsm_res_lr, resolution_y=dsm_res_lr, source_data=MS.ElevationData)
+                chunk.exportRaster(dsm_path_lr, raster_transform=MS.RasterTransformNone, resolution_x=dsm_res_lr, resolution_y=dsm_res_lr, source_data=MS.ElevationData, image_compression = compression)
 
             else:
                 print ("build DSM before trying to export")
@@ -303,9 +311,11 @@ def build_dsm(chunk, exportdir, doc_title, doc, home, name, b_dsm, e_dsm_lr, e_d
             if chunk.elevation is not None:
                 print ("exporting high resolution DSM")
                 dsm_res_hr = float(r_dsm_hr)
+                compression = MS.ImageCompression()
+                compression.tiff_big = True
                 dsm_path_hr = exportdir + "/" + doc_title + "_DSM_HR_" + str(mm_hr) +"mm.tiff"
                 chunk.exportRaster(dsm_path_hr, raster_transform=MS.RasterTransformNone, resolution_x=dsm_res_hr,
-                                resolution_y=dsm_res_hr, source_data=MS.ElevationData)
+                                resolution_y=dsm_res_hr, source_data=MS.ElevationData, image_compression = compression)
             else:
                 print ("build DSM before trying to export")
         else:
@@ -315,8 +325,10 @@ def build_dsm(chunk, exportdir, doc_title, doc, home, name, b_dsm, e_dsm_lr, e_d
             if chunk.elevation is not None:
                 print ("exporting high resolution DSM")
                 dsm_res_hr = float(r_dsm_hr)
+                compression = MS.ImageCompression()
+                compression.tiff_compression = MS.ImageCompression.TiffCompressionNone
                 dsm_path_hr = exportdir + "/" + doc_title + "_DSM_HR_" + str(mm_hr) +"mm.tiff"
-                chunk.exportRaster(dsm_path_hr, raster_transform=MS.RasterTransformNone, resolution_x=dsm_res_hr, resolution_y=dsm_res_hr, source_data=MS.ElevationData)
+                chunk.exportRaster(dsm_path_hr, raster_transform=MS.RasterTransformNone, resolution_x=dsm_res_hr, resolution_y=dsm_res_hr, source_data=MS.ElevationData, image_compression = compression)
 
             else:
                 print ("build DSM before trying to export")
