@@ -1,12 +1,12 @@
-# PhotoScan_Auto_Workflow
-An automated workflow for processing drone imagery in PhotoScan
+# Metashape_Workflow
+An automated workflow for processing drone imagery in Agisoft Metashape.
+ Tested for v1.6.4.
 
-## NB. This code will need to be updated to work with the updated python API in MetaShape >1.6.0!!!
+Developed by Hugh Graham, Andrew Cunliffe (andrewmcunliffe@gmail.com), Pia Benaud and Glenn Slade.
 
 
 **1. Interactive: Collate & Prepare Datasets**
-- Find/start entry in the Image-Based Modelling Processing Log (use the ‘scripted log (for V2)’). Keep this log up to date as new parameters are confirmed and steps are completed.
-- Create project directory (E.g. ‘Sev_SEG_20180531’, note updated date code format).
+- Create project directory (E.g. ‘Sev_SEG_20180531’).
 - Within the project directory, add an ‘Input_Data’ subdirectory, containing:
 	- ‘photos’ subdirectory.
 	- correctly formatted marker coordinate file (refer to example below!)
@@ -15,7 +15,6 @@ An automated workflow for processing drone imagery in PhotoScan
 - Set up ‘input_file.csv’ parameters: mapping all file paths, specifying quality settings and desired output files and resolutions.
 
 **2. Script 1: Camera Alignment**
-
 - Run ‘PhSc_Part1_SPC.py’ *(If running on ISCA note the Moab number for tracking purposes).*
 
 **3. Interactive**
@@ -49,4 +48,3 @@ Look at the number/% of points excluded by the reprojection filter.
 	- Orthomosaic
 - Download/backup data.
 
-**On to the next pipeline...**
