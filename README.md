@@ -40,7 +40,7 @@ Look at the number/% of points excluded by the reprojection filter.
 - Run ‘PhSc_Part3_Exp.py’ *(If running on ISCA note the Moab number for tracking purposes).*
 
 **7. Interactive**
-- FRom ISCA Review console output (o and e file) for errors.
+- From ISCA Review console output (o and e file) for errors.
 - Review processing report:
 	-Inspect all graphics
 	-Inspect marker error values
