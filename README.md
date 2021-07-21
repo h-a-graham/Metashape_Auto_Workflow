@@ -2,7 +2,7 @@
 An automated workflow for processing drone imagery in Agisoft Metashape.
  Tested for v1.6.4.
 
-Developed by Hugh Graham, Andrew Cunliffe, Pia Benaud and Glenn Slade.
+Developed by Hugh Graham, Andrew Cunliffe (andrewmcunliffe@gmail.com), Pia Benaud and Glenn Slade.
 
 
 **1. Interactive: Collate & Prepare Datasets**
