@@ -1,11 +1,13 @@
 # Metashape_Workflow
-An automated workflow for processing drone imagery in Agisoft Metashape.
- Tested for v1.6.4.
 
-Developed by Hugh Graham, Andrew Cunliffe (andrewmcunliffe@gmail.com), Pia Benaud and Glenn Slade.
+An automated workflow for processing drone imagery in Agisoft Metashape (v1.7)
+
+Developed by Hugh Graham, Andrew Cunliffe, Pia Benaud and Glenn Slade 
 
 
+# Instructions (need updating for general use)
 **1. Interactive: Collate & Prepare Datasets**
+- Find/start entry in the Image-Based Modelling Processing Log (use the ‘scripted log (for V2)’). Keep this log up to date as new parameters are confirmed and steps are completed.
 - Create project directory (E.g. ‘Sev_SEG_20180531’).
 - Within the project directory, add an ‘Input_Data’ subdirectory, containing:
 	- ‘photos’ subdirectory.
@@ -15,6 +17,7 @@ Developed by Hugh Graham, Andrew Cunliffe (andrewmcunliffe@gmail.com), Pia Benau
 - Set up ‘input_file.csv’ parameters: mapping all file paths, specifying quality settings and desired output files and resolutions.
 
 **2. Script 1: Camera Alignment**
+
 - Run ‘PhSc_Part1_SPC.py’ *(If running on ISCA note the Moab number for tracking purposes).*
 
 **3. Interactive**
@@ -38,7 +41,7 @@ Look at the number/% of points excluded by the reprojection filter.
 - Run ‘PhSc_Part3_Exp.py’ *(If running on ISCA note the Moab number for tracking purposes).*
 
 **7. Interactive**
-- FRom ISCA Review console output (o and e file) for errors.
+- From ISCA Review console output (o and e file) for errors.
 - Review processing report:
 	-Inspect all graphics
 	-Inspect marker error values
@@ -48,3 +51,4 @@ Look at the number/% of points excluded by the reprojection filter.
 	- Orthomosaic
 - Download/backup data.
 
+**On to the next pipeline...**

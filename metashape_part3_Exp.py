@@ -1,9 +1,9 @@
 #######################################################################################################################
-# ------ PhotoScan workflow Part 3:  ----------------------------------------------------------------------------------
+# ------ Metashape workflow Part 3:  ----------------------------------------------------------------------------------
 # ------ Export DPC, Build and Export: Textured Model, Othomosaic, DSM and PhotoScan Report ---------------------------
 #######################################################################################################################
 
-import Metashape as MS
+import Metashape as PS
 import os
 import csv
 import inspect
@@ -11,10 +11,10 @@ import shutil
 from datetime import datetime
 #hello
 # Clear the Console screen
-MS.app.console_pane.clear()  # comment out when using ISCA
+PS.app.console.clear()  # comment out when using ISCA
 
 startTime = datetime.now()
-print ("Script start time: " + str(startTime))
+print("Script start time: " + str(startTime))
 
 ###################################################################################################
 
@@ -24,7 +24,7 @@ def script_setup():
     input_file_B = (file_loc + "/" + "input_file.csv")
     input_file_B = input_file_B.replace('\\', '/')
 
-    print (input_file_B)
+    print(input_file_B)
 
     var_list = []
 
@@ -42,9 +42,9 @@ def script_setup():
 
     # create export directory if it doesn't already exist
     if os.path.exists(exportdir):
-        print ("export folder exists")
+        print("export folder exists")
     else:
-        print ("creating export folder...")
+        print("creating export folder...")
         os.makedirs(exportdir)
 
     #getting processing options
@@ -73,18 +73,18 @@ def script_setup():
     bt_dsm_lr = var_list[27]
     bt_dsm_hr = var_list[30]
 
-    print (home)
+    print(home)
     print(doc_title)
-    print (datadir)
-    print (coord_sys)
+    print(datadir)
+    print(coord_sys)
     name = "/" + doc_title + ".psx"
 
-    doc = MS.app.document
-    MS.app.gpu_mask = 2 ** len(MS.app.enumGPUDevices()) - 1  # activate all available GPUs
-    if MS.app.gpu_mask <= 1:
-        MS.app.cpu_enable = True  # Enable CPU for GPU accelerated processing (faster with 1 no difference with 0 GPUs)
-    elif MS.app.gpu_mask > 1:
-        MS.app.cpu_enable = False # Disable CPU for GPU accelerated tasks (faster when multiple GPUs are present)
+    doc = PS.app.document
+    PS.app.gpu_mask = 2 ** len(PS.app.enumGPUDevices()) - 1  # activate all available GPUs
+    if PS.app.gpu_mask <= 1:
+        PS.app.cpu_enable = True  # Enable CPU for GPU accelerated processing (faster with 1 no difference with 0 GPUs)
+    elif PS.app.gpu_mask > 1:
+        PS.app.cpu_enable = False # Disable CPU for GPU accelerated tasks (faster when multiple GPUs are present)
 
 
     doc.open(home + name, read_only=False)
@@ -116,43 +116,43 @@ def script_setup():
     if os.path.isfile(home + "/" + doc_title + "_backup2.psx"):
         os.remove(home + "/" + doc_title + "_backup2.psx")
         shutil.rmtree(home + "/" + doc_title + "_backup2.files")
-        print ("Deleting backup2")
+        print("Deleting backup2")
     else: print("Backup2 file does not exist")
 
 def export_DPC(chunk, doc_title, exportdir, e_DPC):  # export points
     if e_DPC == "TRUE":
         if chunk.dense_cloud is not None:
-            print ("Exporting Dense Point Cloud")
+            print("Exporting Dense Point Cloud")
             dpc_name = "/" + doc_title + "_dpc_export.laz"
-            chunk.exportPoints(exportdir + dpc_name, crs=chunk.crs)  # specify projection to use. Precision attribute has been removesd in Metasahep
+            chunk.exportPoints(exportdir + dpc_name, precision=3, projection=chunk.crs)  # specify projection to use.
         else:
-            print ("you need to build a dense point cloud")
+            print("you need to build a dense point cloud")
     else:
-        print ("Dense Point Cloud Export Not Selected")
+        print("Dense Point Cloud Export Not Selected")
         pass
 
 
 def build_mesh(chunk, doc, home, name, b_mesh, mesh_qual):
 
     if b_mesh == "TRUE":
-        print ("building mesh")
+        print("building mesh")
 
         if mesh_qual == "LowFaceCount":
-            chunk.buildModel(surface_type=MS.HeightField, source_data=MS.DenseCloudData, interpolation= MS.EnabledInterpolation,
-                             face_count=MS.LowFaceCount, vertex_colors=True)
+            chunk.buildModel(surface=PS.HeightField, source=PS.DenseCloudData, interpolation= PS.EnabledInterpolation,
+                             face_count=PS.LowFaceCount, vertex_colors=True)
         elif mesh_qual == "MediumFaceCount":
-            chunk.buildModel(surface_type=MS.HeightField, source_data=MS.DenseCloudData, interpolation= MS.EnabledInterpolation,
-                             face_count=MS.MediumFaceCount, vertex_colors=True)
+            chunk.buildModel(surface=PS.HeightField, source=PS.DenseCloudData, interpolation= PS.EnabledInterpolation,
+                             face_count=PS.MediumFaceCount, vertex_colors=True)
         elif mesh_qual == "HighFaceCount":
-            chunk.buildModel(surface_type=MS.HeightField, source_data=MS.DenseCloudData, interpolation= MS.EnabledInterpolation,
-                             face_count=MS.HighFaceCount, vertex_colors=True)
+            chunk.buildModel(surface=PS.HeightField, source=PS.DenseCloudData, interpolation= PS.EnabledInterpolation,
+                             face_count=PS.HighFaceCount, vertex_colors=True)
         else:
-            print ("---------------------------------------------------------------------------------------------")
-            print ("--------------------- WARNING! SET THE CORRECT NAME FOR MESH QUALITY ------------------------")
-            print ("------------------------------- DEFAULTING TO HIGH FACE COUNT -------------------------------")
-            print ("---------------------------------------------------------------------------------------------")
-            chunk.buildModel(surface_type=MS.HeightField, source_data=MS.DenseCloudData, interpolation=MS.EnabledInterpolation,
-                             face_count=MS.HighFaceCount, vertex_colors=True)
+            print("---------------------------------------------------------------------------------------------")
+            print("--------------------- WARNING! SET THE CORRECT NAME FOR MESH QUALITY ------------------------")
+            print("------------------------------- DEFAULTING TO HIGH FACE COUNT -------------------------------")
+            print("---------------------------------------------------------------------------------------------")
+            chunk.buildModel(surface=PS.HeightField, source=PS.DenseCloudData, interpolation=PS.EnabledInterpolation,
+                             face_count=PS.HighFaceCount, vertex_colors=True)
         doc.save(home + name)  # save
 
     else:
@@ -161,9 +161,9 @@ def build_mesh(chunk, doc, home, name, b_mesh, mesh_qual):
 
 def build_texture(chunk, doc, home, name, b_texture, e_model, exportdir, doc_title):
     if b_texture == "TRUE":
-        print ("building texture")
-        chunk.buildUV(mapping=MS.GenericMapping)
-        chunk.buildTexture(blending=MS.MosaicBlending, size=2048, fill_holes=True, ghosting_filter=True)
+        print("building texture")
+        chunk.buildUV(mapping=PS.GenericMapping)
+        chunk.buildTexture(blending=PS.MosaicBlending, size=2048, fill_holes=True, ghosting_filter=True)
 
         doc.save(home + name)  # save
 
@@ -172,27 +172,26 @@ def build_texture(chunk, doc, home, name, b_texture, e_model, exportdir, doc_tit
 
     if e_model == "TRUE":
         if chunk.model is not None:
-            print ("exporting textured model")
+            print("exporting textured model")
             model_path = exportdir + "/" + doc_title + "_tex_model.ply"
-            chunk.exportModel(model_path, binary=True, precision=3, texture_format=MS.ImageFormatJPEG, texture=True,
+            chunk.exportModel(model_path, binary=True, precision=3, texture_format=PS.ImageFormatJPEG, texture=True,
                         normals=False, colors=True, udim=False,
-                        strip_extensions=False, raster_transform=MS.RasterTransformNone)
+                        strip_extensions=False, raster_transform=PS.RasterTransformNone)
 
         else:
-            print (" WARNING: must build mesh and texture before export")
+            print(" WARNING: must build mesh and texture before export")
     else:
-        print ("textured model export not selected")
+        print("textured model export not selected")
 
 
 def build_ortho(chunk, exportdir, doc, home, name, doc_title, b_ortho, e_ortho_lr, e_ortho_hr, r_ortho_lr, r_ortho_hr,
                 bt_ortho_lr, bt_ortho_hr):  # Currently no option to add "description metadata to exports add when available!!!
     if b_ortho == "TRUE":
-        print ("building Orthomosaic")
-        chunk.buildOrthomosaic(surface_data=MS.ModelData, blending_mode=MS.MosaicBlending, fill_holes=True)
+        print("building Orthomosaic")
+        chunk.buildOrthomosaic(surface=PS.ModelData, blending=PS.MosaicBlending, fill_holes=True)
         doc.save(home + name)  # save
     else:
         print("build orthomosaic option not selected")
-
 
     o_mm_lr = int(round(float(r_ortho_lr) * 1000))
     o_mm_hr = int(round(float(r_ortho_hr) * 1000))
@@ -202,14 +201,13 @@ def build_ortho(chunk, exportdir, doc, home, name, doc_title, b_ortho, e_ortho_l
             if chunk.orthomosaic is not None:
                 print("exporting low resolution orthomosaic")
                 ortho_res_lr = float(r_ortho_lr)  # set the desired resolution
-                compression = MS.ImageCompression()
-                compression.tiff_big = True
-                ortho_path_lr = exportdir + "/" + doc_title + "_Ortho_LR_"+ str(o_mm_lr) + "mm.tiff"
-                chunk.exportRaster(ortho_path_lr, raster_transform=MS.RasterTransformNone, resolution_x=ortho_res_lr,
-                                        resolution_y=ortho_res_lr, source_data=MS.OrthomosaicData, image_compression = compression, save_alpha=True)
 
+                ortho_path_lr = exportdir + "/" + doc_title + "_Ortho_LR_"+ str(o_mm_lr) + "mm.tiff"
+                chunk.exportOrthomosaic(ortho_path_lr, raster_transform=PS.RasterTransformNone, dx=ortho_res_lr,
+                                        dy=ortho_res_lr, tiff_big=True, tiff_compression=PS.TiffCompressionNone,
+                                        write_alpha=True)
             else:
-                print ("must build Orthomosaic before export")
+                print("must build Orthomosaic before export")
         else:
             print("low resolution Orthomosaic export option not selected")
     else:  # big tiff false here...
@@ -217,14 +215,13 @@ def build_ortho(chunk, exportdir, doc, home, name, doc_title, b_ortho, e_ortho_l
             if chunk.orthomosaic is not None:
                 print("exporting low resolution orthomosaic")
                 ortho_res_lr = float(r_ortho_lr)  # set the desired resolution
-                compression = MS.ImageCompression()
-                compression.tiff_compression = MS.ImageCompression.TiffCompressionNone
-                ortho_path_lr = exportdir + "/" + doc_title + "_Ortho_LR_" + str(o_mm_lr) + "mm.tiff"
-                chunk.exportRaster(ortho_path_lr, raster_transform=MS.RasterTransformNone, resolution_x=ortho_res_lr,
-                                        resolution_y=ortho_res_lr, source_data=MS.OrthomosaicData, image_compression = compression, save_alpha=True)
 
+                ortho_path_lr = exportdir + "/" + doc_title + "_Ortho_LR_" + str(o_mm_lr) + "mm.tiff"
+                chunk.exportOrthomosaic(ortho_path_lr, raster_transform=PS.RasterTransformNone, dx=ortho_res_lr,
+                                        dy=ortho_res_lr, tiff_big=False, tiff_compression=PS.TiffCompressionNone,
+                                        write_alpha=True)
             else:
-                print ("must build Orthomosaic before export")
+                print("must build Orthomosaic before export")
         else:
             print("low resolution Orthomosaic export option not selected")
 
@@ -234,14 +231,13 @@ def build_ortho(chunk, exportdir, doc, home, name, doc_title, b_ortho, e_ortho_l
                 print("exporting high resolution orthomosaic")
 
                 ortho_res_hr = float(r_ortho_hr)  # set the desired resolution
-                compression = MS.ImageCompression()
-                compression.tiff_big = True
-                ortho_path_hr = exportdir + "/" + doc_title + "_Ortho_HR_" + str(o_mm_hr) + "mm.tiff"
-                chunk.exportRaster(ortho_path_hr, raster_transform=MS.RasterTransformNone, resolution_x=ortho_res_hr,
-                                        resolution_y=ortho_res_hr, source_data=MS.OrthomosaicData, image_compression = compression, save_alpha=True)
 
+                ortho_path_hr = exportdir + "/" + doc_title + "_Ortho_HR_" + str(o_mm_hr) + "mm.tiff"
+                chunk.exportOrthomosaic(ortho_path_hr, raster_transform=PS.RasterTransformNone, dx=ortho_res_hr,
+                                        dy=ortho_res_hr, tiff_big=True, tiff_compression=PS.TiffCompressionNone,
+                                        write_alpha=True)
             else:
-                print ("must build Orthomosaic before export")
+                print("must build Orthomosaic before export")
         else:
             print("high resolution Orthomosaic export option not selected")
 
@@ -251,14 +247,13 @@ def build_ortho(chunk, exportdir, doc, home, name, doc_title, b_ortho, e_ortho_l
                 print("exporting high resolution orthomosaic")
 
                 ortho_res_hr = float(r_ortho_hr)  # set the desired resolution
-                compression = MS.ImageCompression()
-                compression.tiff_compression = MS.ImageCompression.TiffCompressionNone
-                ortho_path_hr = exportdir + "/" + doc_title + "_Ortho_HR_" + str(o_mm_hr) + "mm.tiff"
-                chunk.exportRaster(ortho_path_hr, raster_transform=MS.RasterTransformNone, resolution_x=ortho_res_hr,
-                                        resolution_y=ortho_res_hr, source_data=MS.OrthomosaicData, save_alpha=True)
 
+                ortho_path_hr = exportdir + "/" + doc_title + "_Ortho_HR_" + str(o_mm_hr) + "mm.tiff"
+                chunk.exportOrthomosaic(ortho_path_hr, raster_transform=PS.RasterTransformNone, dx=ortho_res_hr,
+                                        dy=ortho_res_hr, tiff_big=False, tiff_compression=PS.TiffCompressionNone,
+                                        write_alpha=True)
             else:
-                print ("must build Orthomosaic before export")
+                print("must build Orthomosaic before export")
         else:
             print("high resolution Orthomosaic export option not selected")
 
@@ -267,11 +262,11 @@ def build_dsm(chunk, exportdir, doc_title, doc, home, name, b_dsm, e_dsm_lr, e_d
               bt_dsm_lr, bt_dsm_hr):
     # build DSMs
     if b_dsm == "TRUE":
-        print ("building DSM...")
-        chunk.buildDem(source_data=MS.DenseCloudData, interpolation=MS.EnabledInterpolation)
+        print("building DSM...")
+        chunk.buildDem(source=PS.DenseCloudData, interpolation=PS.EnabledInterpolation)
         doc.save(home + name)
     else:
-        print (" build dsm option not selected")
+        print(" build dsm option not selected")
 
     #export DSMs
 
@@ -281,57 +276,49 @@ def build_dsm(chunk, exportdir, doc_title, doc, home, name, b_dsm, e_dsm_lr, e_d
     if bt_dsm_lr == "TRUE":
         if e_dsm_lr == "TRUE":
             if chunk.elevation is not None:
-                print ("exporting low resolution DSM")
+                print("exporting low resolution DSM")
                 dsm_res_lr = float(r_dsm_lr)
-                compression = MS.ImageCompression()
-                compression.tiff_big = True
                 dsm_path_lr = exportdir + "/" + doc_title + "_DSM_LR_" + str(mm_lr) +"mm.tiff"
-                chunk.exportRaster(dsm_path_lr, raster_transform=MS.RasterTransformNone, resolution_x=dsm_res_lr,
-                                resolution_y=dsm_res_lr, source_data=MS.ElevationData, image_compression = compression)
+                chunk.exportDem(dsm_path_lr, raster_transform=PS.RasterTransformNone, dx=dsm_res_lr,
+                                dy=dsm_res_lr, tiff_big=True)
             else:
-                print ("build DSM before trying to export")
+                print("build DSM before trying to export")
         else:
             print("low resolution DSM export option not selected")
     else:
         if e_dsm_lr == "TRUE":
             if chunk.elevation is not None:
-                print ("exporting low resolution DSM")
+                print("exporting low resolution DSM")
                 dsm_res_lr = float(r_dsm_lr)
-                compression = MS.ImageCompression()
-                compression.tiff_compression = MS.ImageCompression.TiffCompressionNone
                 dsm_path_lr = exportdir + "/" + doc_title + "_DSM_LR_" + str(mm_lr) +"mm.tiff"
-                chunk.exportRaster(dsm_path_lr, raster_transform=MS.RasterTransformNone, resolution_x=dsm_res_lr, resolution_y=dsm_res_lr, source_data=MS.ElevationData, image_compression = compression)
-
+                chunk.exportDem(dsm_path_lr, raster_transform=PS.RasterTransformNone, dx=dsm_res_lr, dy=dsm_res_lr,
+                                tiff_big=False)
             else:
-                print ("build DSM before trying to export")
+                print("build DSM before trying to export")
         else:
             print("low resolution DSM export option not selected")
     if bt_dsm_hr == "TRUE":
         if e_dsm_hr == "TRUE":
             if chunk.elevation is not None:
-                print ("exporting high resolution DSM")
+                print("exporting high resolution DSM")
                 dsm_res_hr = float(r_dsm_hr)
-                compression = MS.ImageCompression()
-                compression.tiff_big = True
                 dsm_path_hr = exportdir + "/" + doc_title + "_DSM_HR_" + str(mm_hr) +"mm.tiff"
-                chunk.exportRaster(dsm_path_hr, raster_transform=MS.RasterTransformNone, resolution_x=dsm_res_hr,
-                                resolution_y=dsm_res_hr, source_data=MS.ElevationData, image_compression = compression)
+                chunk.exportDem(dsm_path_hr, raster_transform=PS.RasterTransformNone, dx=dsm_res_hr,
+                                dy=dsm_res_hr, tiff_big=True)
             else:
-                print ("build DSM before trying to export")
+                print("build DSM before trying to export")
         else:
             print("high resolution DSM export option not selected")
     else:
         if e_dsm_hr == "TRUE":
             if chunk.elevation is not None:
-                print ("exporting high resolution DSM")
+                print("exporting high resolution DSM")
                 dsm_res_hr = float(r_dsm_hr)
-                compression = MS.ImageCompression()
-                compression.tiff_compression = MS.ImageCompression.TiffCompressionNone
                 dsm_path_hr = exportdir + "/" + doc_title + "_DSM_HR_" + str(mm_hr) +"mm.tiff"
-                chunk.exportRaster(dsm_path_hr, raster_transform=MS.RasterTransformNone, resolution_x=dsm_res_hr, resolution_y=dsm_res_hr, source_data=MS.ElevationData, image_compression = compression)
-
+                chunk.exportDem(dsm_path_hr, raster_transform=PS.RasterTransformNone, dx=dsm_res_hr, dy=dsm_res_hr,
+                                tiff_big=False)
             else:
-                print ("build DSM before trying to export")
+                print("build DSM before trying to export")
         else:
             print("high resolution DSM export option not selected")
 
@@ -339,19 +326,19 @@ def build_dsm(chunk, exportdir, doc_title, doc, home, name, b_dsm, e_dsm_lr, e_d
 def export_report(chunk, exportdir, doc_title, e_report):
 
     if e_report == "TRUE":
-        print ("generating and exporting photoscan report")
+        print("generating and exporting photoscan report")
         report_path = exportdir + "/" + doc_title + "_process_report.pdf"
         chunk.exportReport(path=report_path, description=doc_title)
     else:
-        print ("export report option not selected")
+        print("export report option not selected")
 
 
 def create_settings_summary(chunk, home, doc_title, exportdir, dpc_npoints):
-    print ("producing final settings summary")
+    print("producing final settings summary")
 
     # determine project reference settings
-    MS_cam_locsa = (str(chunk.camera_location_accuracy))
-    MS_cam_locs = MS_cam_locsa.replace("Vector", "")
+    ps_cam_locsa = (str(chunk.camera_location_accuracy))
+    ps_cam_locs = ps_cam_locsa.replace("Vector", "")
 
     list_a = []
     for marker in chunk.markers:
@@ -359,18 +346,18 @@ def create_settings_summary(chunk, home, doc_title, exportdir, dpc_npoints):
             list_a.append(marker.reference.accuracy)
 
     if (list_a[1:] ==  list_a[:-1]) == True:
-        MS_mark_locsa = (str(chunk.marker_location_accuracy))
-        MS_mark_locs = MS_mark_locsa.replace("Vector", "")
+        ps_mark_locsa = (str(chunk.marker_location_accuracy))
+        ps_mark_locs = ps_mark_locsa.replace("Vector", "")
     else:
 
         x_list = [item[0] for item in list_a]
         y_list = [item[1] for item in list_a]
         z_list = [item[2] for item in list_a]
 
-        MS_mark_locs = str([[min(x_list), max(x_list)], [min(y_list), max(y_list)], [min(z_list), max(z_list)]])
+        ps_mark_locs = str([[min(x_list), max(x_list)], [min(y_list), max(y_list)], [min(z_list), max(z_list)]])
 
-    MS_markproj = chunk.marker_projection_accuracy
-    MS_tp_acc = chunk.tiepoint_accuracy
+    ps_markproj = chunk.marker_projection_accuracy
+    ps_tp_acc = chunk.tiepoint_accuracy
 
     #import settings output files from script 1 and 2
     s1_out_sett = home + '/' + doc_title + '.files/PhSc1_settings_TEMP.csv'
@@ -440,7 +427,7 @@ def create_settings_summary(chunk, home, doc_title, exportdir, dpc_npoints):
                     "% points removed by Bounding Box", "n points in final SPC", "",
                     "n points in original DPC", "n points removed manually DPC", "% points removed manually DPC",
                     "n points final DPC"]
-        params_list = [MS_cam_locs, MS_mark_locs, MS_markproj, MS_tp_acc, blank,
+        params_list = [ps_cam_locs, ps_mark_locs, ps_markproj, ps_tp_acc, blank,
                        n_cams_loaded, n_cams_rem_QF, perc_cams_rem_QF,
                        min_qual_val, n_cams_not_align, perc_cams_not_align, n_cams_man_disab, perc_cams_man_disab,
                        n_cams_enabled, perc_cams_enabled, blank,
@@ -457,7 +444,7 @@ def create_settings_summary(chunk, home, doc_title, exportdir, dpc_npoints):
         print("producing reference settings file only")
         opt_list = ["camera_location_accuracy_(m)", "marker_location_accuracy_(m)", "marker_projection_accuracy_(pix)",
                     "tiepoint_accuracy_(pix)"]
-        params_list = [MS_cam_locs, MS_mark_locs, MS_markproj, MS_tp_acc]
+        params_list = [ps_cam_locs, ps_mark_locs, ps_markproj, ps_tp_acc]
 
         with open(exportdir + "/" + doc_title + "_reference_settings.csv", 'w', newline='') as f:
             writer = csv.writer(f)
@@ -467,9 +454,5 @@ def create_settings_summary(chunk, home, doc_title, exportdir, dpc_npoints):
 
 if __name__ == '__main__':
     script_setup()
-    print ("Total Time: " + str(datetime.now() - startTime))  # GET TOTAL TIME
-    print ("Script 3 Finished Review project setting CSV to assess the proportion of aligned images, number of tie points ")
-    print ("Review Console Output for errors")
-    print ("Review processing report - inspect all graphics, inspect marker error, inspect reprojection errors")
-    print ("Check required files were generated .laz and Orthomosaic")
-    print ("back up data")
+    print("Total Time: " + str(datetime.now() - startTime))  # GET TOTAL TIME
+

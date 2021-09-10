@@ -1,6 +1,7 @@
 #######################################################################################################################
-# ------ PhotoScan workflow Part 2: -----------------------------------------------------------------------------------
-# ------  bundle adjustment and Dense point cloud creation -----------------------------------------
+
+# ------ Metashape workflow Part 1:  bundle adjustment and Dense point cloud creation ---------------------------------
+
 #######################################################################################################################
 
 import Metashape as MS #MSCHANGE
@@ -26,7 +27,9 @@ def script_setup():
     input_file_B = (file_loc + "/" + "input_file.csv")
     input_file_B = input_file_B.replace('\\', '/')
 
-    print (input_file_B)
+
+    print(input_file_B)
+
 
     var_list = []
 
@@ -56,15 +59,17 @@ def script_setup():
 
     # create export directory if it doesn't already exist
     if os.path.exists(exportdir):
-        print ("export folder exists")
+
+        print("export folder exists")
     else:
-        print ("creating export folder...")
+        print("creating export folder...")
         os.makedirs(exportdir)
 
-    print (home)
+    print(home)
     print(doc_title)
-    print (datadir)
-    print (coord_sys)
+    print(datadir)
+    print(coord_sys)
+
     name = "/" + doc_title + ".psx"
 
     doc = MS.app.document
@@ -80,7 +85,8 @@ def script_setup():
             os.remove(home + '/' + doc_title + '.files/lock')
             print("lock file removed")
         except IOError:
-            print ("running interactively... continue")
+            print("running interactively... continue")
+
     doc.open(home + name, read_only=False)
     chunk = doc.chunk
 
@@ -109,7 +115,9 @@ def check_markers(chunk):
     n_markers = len(chunk.markers)
     quit_yn = None
     if n_markers == 0:
-        print ("No markers are present - continue...")
+
+        print("No markers are present - continue...")
+
         quit_yn = True
 
     else:
@@ -122,26 +130,34 @@ def check_markers(chunk):
 
         if n_markers <= 3:
             if n_enabled_mark < n_markers:
-                print ("SCRIPT ABORTED: Only " + str(n_markers) + " Markers present. Enable all markers!!!" + "\n" +
+
+                print("SCRIPT ABORTED: Only " + str(n_markers) + " Markers present. Enable all markers!!!" + "\n" +
+
                        "CLOSING PHOTOSCAN........")
 
                 quit_yn = False
 
             elif n_enabled_mark == n_markers:
-                print (str(n_markers) + " Markers present - All enabled" + "\n" +
+
+                print(str(n_markers) + " Markers present - All enabled" + "\n" +
+
                        "continue...")
                 quit_yn = True
 
         elif n_markers > 3:
             if n_enabled_mark == n_markers:
-                print ("SCRIPT ABORTED: " + str(n_markers) + " present - All enabled" + "\n" +
+
+                print("SCRIPT ABORTED: " + str(n_markers) + " present - All enabled" + "\n" +
+
                        "At least 1 marker must be disabled for use as validation marker - Disable Marker(s)" + "\n" +
                        "CLOSING PHOTOSCAN.........")
 
                 quit_yn = False
 
             elif n_enabled_mark < n_markers:
-                print (str(n_markers) + " markers in total." + "\n" + str(n_enabled_mark) +
+
+                print(str(n_markers) + " markers in total." + "\n" + str(n_enabled_mark) +
+
                        " enabled Ground Control Points" + "\n" +
                        str(n_markers-n_enabled_mark) + " verification markers" + "\n" + "Continue...")
 
@@ -166,10 +182,12 @@ def count_aligned(chunk): # GET NUMBER OF ALIGNED AND NOT-ALIGNED CAMERAS
 
     n_not_aligned = len(not_aligned_list)
 
-    print ("number (%) of aligned cameras is:")
-    print (str(n_aligned) + "(" + str(n_aligned / (n_aligned + n_not_aligned) * 100) + "%)")
-    print ("number of cameras not aligned is:")
-    print (str(n_not_aligned) + "(" + str(n_not_aligned / (n_aligned + n_not_aligned) * 100) + "%)")
+
+    print("number (%) of aligned cameras is:")
+    print(str(n_aligned) + "(" + str(n_aligned / (n_aligned + n_not_aligned) * 100) + "%)")
+    print("number of cameras not aligned is:")
+    print(str(n_not_aligned) + "(" + str(n_not_aligned / (n_aligned + n_not_aligned) * 100) + "%)")
+
 
 
 def Optimise_Bundle_adj(chunk, doc, home, name, doc_title):
@@ -177,8 +195,10 @@ def Optimise_Bundle_adj(chunk, doc, home, name, doc_title):
                           fit_b2=True, fit_k1=True, fit_k2=True, fit_k3=False,
                           fit_k4=False, fit_p1=True, fit_p2=True, fit_p3=False,
                           fit_p4=False)  # As suggested in James, et al. (2017)
-    print ("Optimization Parameters:")
-    print (MS.app.document.chunk.meta['optimize/fit_flags'])
+
+    print("Optimization Parameters:")
+    print(MS.app.document.chunk.meta['optimize/fit_flags'])
+
 
     print("save")
     doc.save(home + name)
@@ -221,24 +241,32 @@ def build_DPC(chunk, dpc_quality, pair_dm_lim, pair_dm_val, pair_dpc_lim, pair_d
                 continue
 
     outside_BB = len([p for p in chunk.point_cloud.points if p.selected])
-    print ("number of points outside bounding box is:" + str(outside_BB))
+
+    print("number of points outside bounding box is:" + str(outside_BB))
+
 
     n_points_final_SPC = len(chunk.point_cloud.points) - outside_BB
 
     if pair_dm_lim == "TRUE":  # This part determines if a pair limit is required for depth map filtering
-        print ("Depth map pair filtering enabled: limit = " + str(pair_dm_val))
+
+        print("Depth map pair filtering enabled: limit = " + str(pair_dm_val))
+
         MS.app.settings.setValue('main/depth_filtering_limit', float(pair_dm_val))  # sets value based on input file
     else:
         MS.app.settings.setValue('main/depth_filtering_limit', -1)  # restores default
 
     if pair_dpc_lim == "TRUE":  # This part determines if a pair limit is required for depth map filtering
-        print ("Dense cloud pair filtering enabled: limit = " + str(pair_dpc_val))
+
+        print("Dense cloud pair filtering enabled: limit = " + str(pair_dpc_val))
+
         MS.app.settings.setValue('main/dense_cloud_max_neighbors', float(pair_dpc_val))  # sets value based on input file
     else:
         MS.app.settings.setValue('main/dense_cloud_max_neighbors', -1)
 
 
-    print ("building Dense Point Cloud...")
+
+    print("building Dense Point Cloud...")
+
     if dpc_quality == "LowestQuality":
         chunk.buildDepthMaps(downscale=5, filter_mode=MS.MildFiltering, reuse_depth=True)
     elif dpc_quality == "LowQuality":
@@ -250,10 +278,12 @@ def build_DPC(chunk, dpc_quality, pair_dm_lim, pair_dm_val, pair_dpc_lim, pair_d
     elif dpc_quality == "UltraQuality":
         chunk.buildDepthMaps(downscale=1, filter_mode=MS.MildFiltering, reuse_depth=True)
     else:
-        print ("---------------------------------------------------------------------------------------------")
-        print ("--------------------- WARNING! SET A CORRECT NAME FOR DPC QUALITY ---------------------------")
-        print ("------------------------------- DEFAULTING TO HIGH QUALITY ----------------------------------")
-        print ("---------------------------------------------------------------------------------------------")
+
+        print("---------------------------------------------------------------------------------------------")
+        print("--------------------- WARNING! SET A CORRECT NAME FOR DPC QUALITY ---------------------------")
+        print("------------------------------- DEFAULTING TO HIGH QUALITY ----------------------------------")
+        print("---------------------------------------------------------------------------------------------")
+
         chunk.buildDepthMaps(downscale=2, filter_mode=MS.MildFiltering, reuse_depth=True)
 
     chunk.buildDenseCloud(point_colors=True)
@@ -275,10 +305,8 @@ def export_settings(home, doc_title, outside_BB, n_points_final_SPC, n_points_or
             writer.writerows(zip(opt_list, params_list))
 
 
-    #############  MANUAL SCREENING OF DENSE POINT CLOUD NOW REQUIRED ##########################
-
-
 if __name__ == '__main__':
     script_setup()
-    print ("Total Time: " + str(datetime.now() - startTime))  # GET TOTAL TIME
-    print ("PART 2 SCRIPT FINISHED - Review Console Output for errors and review the dense cloud and remove obvious outliers")
+    print("Total Time: " + str(datetime.now() - startTime))  # GET TOTAL TIME
+    print("PART 2 SCRIPT FINISHED - Review Console Output for errors and review the dense cloud and remove obvious outliers")
+
