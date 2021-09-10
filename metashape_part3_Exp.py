@@ -455,3 +455,4 @@ def create_settings_summary(chunk, home, doc_title, exportdir, dpc_npoints):
 if __name__ == '__main__':
     script_setup()
     print("Total Time: " + str(datetime.now() - startTime))  # GET TOTAL TIME
+
