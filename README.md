@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/148120434.svg)](https://zenodo.org/badge/latestdoi/148120434)
+
 # Metashape_Workflow
 
 An automated workflow for processing drone imagery in Agisoft Metashape (v1.7)
