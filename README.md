@@ -53,4 +53,7 @@ Look at the number/% of points excluded by the reprojection filter.
 	- Orthomosaic
 - Download/backup data.
 
-**On to the next pipeline...**
+
+
+##Troubleshooting
+Use projected coordinate reference systems for project, GCPs and Camperas to aovid errors.
